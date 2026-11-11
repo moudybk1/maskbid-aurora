@@ -1,0 +1,7 @@
+{
+  "name": "@maskbid/private-solver",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rust/wasm32-wasip2 OutLayer solver. Not part of the npm build; see build.sh.",
+  "scripts": { "build": "./build.sh", "test": "cargo test" }
+}

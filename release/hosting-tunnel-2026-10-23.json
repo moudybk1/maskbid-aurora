@@ -1,0 +1,11 @@
+{
+  "note": "TEMPORARY transport for the gate run: Cloudflare quick tunnel to a localhost static server (user's choice while test.fastfs.io was down). The hash is what OutLayer pins; torn down after the run and the adapter URL switched back to FastFS.",
+  "maskbid-private-solver.wasm": {
+    "url": "https://vertical-spears-arlington-neutral.trycloudflare.com/ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8.wasm",
+    "sha256": "ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8"
+  },
+  "maskbid-private-solver-probe.wasm": {
+    "url": "https://vertical-spears-arlington-neutral.trycloudflare.com/5f6b8f8a74a56978634a03693d4392d8051e799d90b28500bdf0ca34f1d291f5.wasm",
+    "sha256": "5f6b8f8a74a56978634a03693d4392d8051e799d90b28500bdf0ca34f1d291f5"
+  }
+}

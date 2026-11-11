@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-08T11:03:31.772Z",
+  "machine": "darwin/arm64 node v22.23.2",
+  "note": "native timings, not TEE; OutLayer end-to-end latency is in release/gate-run.json",
+  "typescript": {
+    "solve_1_bids": {
+      "samples": 20,
+      "p50_ms": 0.7,
+      "p95_ms": 0.97
+    },
+    "solve_3_bids": {
+      "samples": 20,
+      "p50_ms": 1.89,
+      "p95_ms": 1.98
+    },
+    "solve_32_bids": {
+      "samples": 20,
+      "p50_ms": 19.38,
+      "p95_ms": 20.01
+    }
+  },
+  "rust": {
+    "keygen_rsa2048_from_seed": {
+      "p50_ms": 81.49,
+      "p95_ms": 121.63,
+      "samples": 10
+    },
+    "solve_1_bids": {
+      "p50_ms": 1.52,
+      "p95_ms": 2.56,
+      "samples": 20
+    },
+    "solve_32_bids": {
+      "p50_ms": 24.73,
+      "p95_ms": 24.87,
+      "samples": 20
+    },
+    "solve_3_bids": {
+      "p50_ms": 2.55,
+      "p95_ms": 3.12,
+      "samples": 20
+    }
+  }
+}

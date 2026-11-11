@@ -1,0 +1,26 @@
+{
+  "name": "maskbid-aurora",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm run test:contracts && npm run test:protocol",
+    "test:contracts": "cd contracts && forge test",
+    "test:protocol": "npm -w @maskbid/protocol test",
+    "build:contracts": "cd contracts && forge build",
+    "sync": "node scripts/sync-abi.mjs",
+    "anvil": "anvil --block-time 2",
+    "deploy:local": "node scripts/deploy-local.mjs",
+    "solver": "npm -w @maskbid/solver start",
+    "web": "npm -w web run dev",
+    "e2e": "node scripts/e2e.mjs",
+    "web:testnet": "sh -c 'set -a; . ./.env.web-testnet; set +a; npm -w web run dev'",
+    "keeper:testnet": "sh -c 'set -a; . ./.env.aurora-testnet; set +a; KEEPER_KEY=$DEPLOYER_KEY npm -w @maskbid/keeper start'"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}

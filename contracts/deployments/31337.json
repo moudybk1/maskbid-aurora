@@ -1,0 +1,15 @@
+{
+  "asset": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  "auction": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+  "callbackSender": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
+  "chainId": 31337,
+  "configHash": "0x0512bc0036ed75b8b42f71c5ee7b78a1c8c7261b7c85171af5c3b67a98f69da7",
+  "deployBlock": 1,
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "nearAdapterAccount": "local-mock-adapter",
+  "profile": "demo",
+  "registry": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "solverCodeHash": "0x96c77812e251d57fd34a97aff0888da6e4d85f0d6f91d8f2fc222474ab53cf74",
+  "token": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "xccPrecompile": "0x0000000000000000000000000000000000000000"
+}

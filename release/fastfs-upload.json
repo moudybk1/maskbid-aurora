@@ -1,0 +1,16 @@
+{
+  "maskbid-private-solver.wasm": {
+    "sha256": "ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+    "signed": true,
+    "signature": "ed25519:a2uSUB7kWLi6mNz367nKL8QyLiP86YQaG2ZiugRMj5JbKoK8bLgGyjAsJZfx9aPPYaP8Eiwy6ouELQYavpcHwad",
+    "expected_failure": true,
+    "url": "https://test.fastfs.io/maskbid-keeper.testnet/outlayer.testnet/ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8.wasm"
+  },
+  "maskbid-private-solver-probe.wasm": {
+    "sha256": "5f6b8f8a74a56978634a03693d4392d8051e799d90b28500bdf0ca34f1d291f5",
+    "signed": true,
+    "signature": "ed25519:4LZjMMNitqGir7VTu7fpyWVwox5oLtAhMuWwyBaeSWZTzF1YMuwVTyu9rkjV66HRJZMqcBmuuzKt7uqDYj3cKPtc",
+    "expected_failure": true,
+    "url": "https://test.fastfs.io/maskbid-keeper.testnet/outlayer.testnet/5f6b8f8a74a56978634a03693d4392d8051e799d90b28500bdf0ca34f1d291f5.wasm"
+  }
+}

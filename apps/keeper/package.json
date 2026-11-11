@@ -1,0 +1,13 @@
+{
+  "name": "@maskbid/keeper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Permissionless Aurora timers + manifest submission to the NEAR adapter. Holds no key material and cannot forge results.",
+  "scripts": { "start": "node src/index.ts" },
+  "dependencies": {
+    "@maskbid/contracts": "*",
+    "@maskbid/protocol": "*",
+    "viem": "^2.57.0"
+  }
+}

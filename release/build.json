@@ -1,0 +1,30 @@
+{
+  "builtAt": "2026-10-23T12:32:33Z",
+  "solverWasm": {
+    "file": "apps/private-solver/dist/maskbid-private-solver.wasm",
+    "sha256": "ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+    "target": "wasm32-wasip2",
+    "manifest": "apps/private-solver/manifest.json",
+    "pinnedAdapter": "maskbid-adapter.testnet"
+  },
+  "solverProbeWasm": {
+    "file": "apps/private-solver/dist/maskbid-private-solver-probe.wasm",
+    "sha256": "5f6b8f8a74a56978634a03693d4392d8051e799d90b28500bdf0ca34f1d291f5",
+    "purpose": "G-02 negatives: same code, no callers gate; must NOT be able to open the production sealed blob"
+  },
+  "adapterWasm": {
+    "file": "apps/near-adapter/dist/maskbid-near-adapter.wasm",
+    "sha256": "d7875f83052558bdae5c5f94bb955bc3e9620d7559d8dc8876b7b4ab7829a8c7",
+    "account": "maskbid-adapter.testnet",
+    "deployTxNoInit": "Eo4AuUQ1JCr37EPZXMxpPnJ4GP3YHSDjmJG91asVRq8Y",
+    "note": "Code deployed to maskbid-adapter.testnet without init (NEAR VM accepts the module); `new` runs once the Aurora auction address and configHash exist."
+  },
+  "callbackSender": "0x780dFA1E400790fffAeC39CF89c4c8182843570C",
+  "localChecks": {
+    "rustVectors": "cargo test: 6 passed (protocol-vectors.json byte-identical)",
+    "adapterUnit": "cargo test: 8 passed",
+    "foundry": "forge test: 31 passed (incl. Xcc.t.sol)",
+    "protocolTs": "node --test: 6 passed",
+    "goldenE2eAnvil": "scripts/e2e.mjs on a private Anvil (1 s blocks) with the XCC-wired contracts + relabelled fallback adapter: GOLDEN AUCTION OK (seller +150, winner -150 + token, losers refunded, escrow 0)"
+  }
+}

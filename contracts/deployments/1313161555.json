@@ -1,0 +1,15 @@
+{
+  "asset": "0x5A4FA1404e8d2D20d2fb8558908B9cC8B5Dc7351",
+  "auction": "0x9802a6510D47941B139720d54bdBd61954ed5C5A",
+  "callbackSender": "0x780dFA1E400790fffAeC39CF89c4c8182843570C",
+  "chainId": 1313161555,
+  "configHash": "0xffb2de13df5deec07bfd1eb049c68228c10a521b891becb78670cb51f07f2ebe",
+  "deployBlock": 274406157,
+  "deployer": "0x9924e2f8F8f759Da0E250F37d4201C4C5eD647F2",
+  "nearAdapterAccount": "maskbid-adapter.testnet",
+  "profile": "demo",
+  "registry": "0x5034949260CCEd2b5EedC54FAc864e0f945eA767",
+  "solverCodeHash": "0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+  "token": "0x650E37C7F1eE39f753734A689F1122861321D8f9",
+  "xccPrecompile": "0x516Cded1D16af10CAd47D6D49128E2eB7d27b372"
+}

@@ -1,0 +1,422 @@
+{
+  "deployTxs": [
+    {
+      "contractName": "MockUSDC",
+      "contractAddress": "0x650e37c7f1ee39f753734a689f1122861321d8f9",
+      "hash": "0x13569fc7e3548431d16796bc059ecb1c8c6b182a08d13f98a84198572f65a051",
+      "type": "CREATE"
+    },
+    {
+      "contractName": "ParticipantRegistry",
+      "contractAddress": "0x5034949260cced2b5eedc54fac864e0f945ea767",
+      "hash": "0x46edef950e8b4e330e904ccf1f2e996dc5d3b8e7f3022a5ee1001ea841004349",
+      "type": "CREATE"
+    },
+    {
+      "contractName": "MaskBidAsset",
+      "contractAddress": "0x5a4fa1404e8d2d20d2fb8558908b9cc8b5dc7351",
+      "hash": "0x8b3c84b3b0c19ec6fcb58674fcd3d89154014635c65236d1a5a43799bf0111b2",
+      "type": "CREATE"
+    },
+    {
+      "contractName": "MaskBidAuction",
+      "contractAddress": "0x9802a6510d47941b139720d54bdbd61954ed5c5a",
+      "hash": "0xb8e723466422e9b7dbc2a3adbc62803192ae0971d55d767a0651e5a953860df0",
+      "type": "CREATE"
+    }
+  ],
+  "deployedAt": 1792763053046,
+  "deployment": {
+    "chainId": 1313161555,
+    "auction": "0x9802a6510D47941B139720d54bdBd61954ed5C5A",
+    "asset": "0x5A4FA1404e8d2D20d2fb8558908B9cC8B5Dc7351",
+    "registry": "0x5034949260CCEd2b5EedC54FAc864e0f945eA767",
+    "token": "0x650E37C7F1eE39f753734A689F1122861321D8f9",
+    "configHash": "0xffb2de13df5deec07bfd1eb049c68228c10a521b891becb78670cb51f07f2ebe",
+    "solverCodeHash": "0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+    "callbackSender": "0x780dFA1E400790fffAeC39CF89c4c8182843570C",
+    "nearAdapterAccount": "maskbid-adapter.testnet",
+    "xccPrecompile": "0x516Cded1D16af10CAd47D6D49128E2eB7d27b372",
+    "xccGas": "200000000000000",
+    "adapterConfig": {
+      "auction": "0x9802a6510d47941b139720d54bdbd61954ed5c5a",
+      "aurora": "aurora",
+      "callbackSender": "0x780dfa1e400790fffaec39cf89c4c8182843570c",
+      "chainId": 1313161555,
+      "configHash": "0xffb2de13df5deec07bfd1eb049c68228c10a521b891becb78670cb51f07f2ebe",
+      "executionDeposit": "100000000000000000000000",
+      "operator": "maskbid-keeper.testnet",
+      "outlayer": "outlayer.testnet",
+      "solverCodeHash": "0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+      "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8.wasm",
+      "xccPredecessor": "9802a6510d47941b139720d54bdbd61954ed5c5a.aurora"
+    }
+  },
+  "updatedAt": "2026-11-08T11:42:46.785Z",
+  "setup": {
+    "register": {
+      "0x1dfb61D5b1975A2f536658d367363d9B346b578b": "0x3650f31602affcdcd201a4aea233b03a5139c8127465ecbf33f18b8d98bc3453",
+      "0xE34D0Bed1C240BD7aB3de3e5eAA88b049db6d4D4": "0x8c94ec7cf04967d654f6b38e202dd0824124794a01d9f7e4f1a778c1922a7b45",
+      "0xA7E804Fa5bfFc02Ea1BfA5BB6c70d3D74E89DA33": "0xc8aecee00ebb9a22cf8ee5147f9bd21e3065fc9d72be68b393d64a5c6fd4478a",
+      "0xB5492Ca31DCE2fFDB7D885970A2D1C8db477242e": "0xa7a23882e9bcacab14acd78dbcc81b40617e327394f3de19dff39d9956a3591d"
+    }
+  },
+  "xccProbe": {
+    "keyRequestId": "0x03ce185f0d643e8d024b49909188fe3c93ce09eaaabfa7b79c6f981db59cb5eb",
+    "prepareTx": "0x387cfcd5a1bdd26092e0f54edf601aeef9d959a1debe619d88b86c139a312b77",
+    "gasUsed": "1710267",
+    "xccPrecompileLog": null,
+    "adapterTimeline": [
+      {
+        "t": "2026-10-23T13:48:40.673Z",
+        "status": "no record yet"
+      },
+      {
+        "t": "2026-10-23T13:48:51.536Z",
+        "status": "Dispatched"
+      },
+      {
+        "t": "2026-10-23T13:50:46.779Z",
+        "status": "Failed (unexpected solver output)"
+      }
+    ],
+    "adapterRecord": {
+      "deliveredToAurora": false,
+      "dispatchedAtMs": 1792763318536,
+      "keyId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "lastError": "unexpected solver output",
+      "owner": "0x1dfb61d5b1975a2f536658d367363d9b346b578b",
+      "sealedBlobHash": "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "Failed"
+    },
+    "auroraExplorer": {
+      "tx": "https://explorer.testnet.aurora.dev/tx/0x387cfcd5a1bdd26092e0f54edf601aeef9d959a1debe619d88b86c139a312b77",
+      "nearReceiptOfSubmit": "eT2BU5YiPP557LkDywsvsd2fCvWYZZWGKfXn7NVAT6W",
+      "relayerPredecessor": "relay.aurora",
+      "relayerGasTgas": 300
+    },
+    "reading": "prepareAuctionKey (1.71M EVM gas incl. 200 Tgas attached) reached the adapter through <hex(auction)>.aurora (status Requested->Dispatched within 11 s), OutLayer accepted request_execution and resolved it ~2 min later; the run itself failed because the WasmUrl was not served (FastFS gateway 502), so on_key recorded Failed. Adapter wasm at that time: f6edb194 (gas-tightened build 224c7b04 deployed before the probe)."
+  },
+  "nearAdapter": {
+    "account": "maskbid-adapter.testnet",
+    "initTx": "GVBJQVv5H42m2TbYt5oah9ajntv3FK5Lhsb3FSk47S2j",
+    "codeRedeploys": [
+      "qzjPxx5zLKmPaYSLbnwKNkweWSQA8gi8Hzq52FDQvYb (gas constants)",
+      "7fGKr7UCc47en9AUWUnhpARHBoCP112uoeH2bTv33va7 (raw output snippet in errors)"
+    ],
+    "xccRouterFundTx": "2fHNYQEcgQv217Lz4omWoc8fvnovzURKct7VJ1C2qxdW",
+    "xccRouter": "9802a6510d47941b139720d54bdbd61954ed5c5a.aurora"
+  },
+  "outlayerDiagnostics": {
+    "readAt": "2026-10-23T15:05:00Z",
+    "finding": "OutLayer testnet currently executes only wasm it already has cached; every job whose WasmUrl must be downloaded is never fetched (our localhost server saw no request) and never resolved, so the NEAR yield promise fails after ~2 min ('Execution promise failed: Failed', no execution_completed event). This is independent of the host: a public file from OutLayer's own GitHub repo shows the same behaviour. The FastFS testnet gateway (test.fastfs.io / <account>.fastfs.io) answers HTTP 502 for every path, including the vrf-example README's own URL.",
+    "jobs": [
+      {
+        "tx": "DopaDgh3bxjWA2ieZnWigZhZu5HEc15A2LDs8mRPMBsb",
+        "what": "adapter redispatch_key -> INIT_KEY, prod wasm via Cloudflare tunnel URL",
+        "result": "yield failed after ~2 min, no download"
+      },
+      {
+        "tx": "2DxZ4K6gM6hQ2QrK3Gx7L6UPZAUcWxbgdRTeWXB11GRr",
+        "what": "control: GitHub source out-layer/random-example",
+        "result": "resolved within seconds: 'Building from a GitHub repository is not available right now' (worker alive)"
+      },
+      {
+        "tx": "JCd58SGS6QyHnHi1n6fyCxan1FvuWERFt4XL7WBmRfDM",
+        "what": "probe wasm (no callers gate) via tunnel URL, keeper as caller",
+        "result": "yield failed, no download"
+      },
+      {
+        "tx": "9KivcZGR2k9QhJEqriDV89SnPCxuhZcbWYKF39jwtmL3",
+        "what": "control: vrf-example wasm from wasmhub.testnet.fastfs.io (cached by the worker since 2026-10-16)",
+        "result": "executed (218 ms, input error as expected): execution path works for cached artefacts"
+      },
+      {
+        "tx": "9bZDzgWnxJ8hBEq52qK3n62LisJdkHskC4Hv688evcwM",
+        "what": "probe wasm via tunnel URL with default resource limits",
+        "result": "yield failed, no download (limits are not the cause)"
+      },
+      {
+        "tx": "HBbzqU9sXU1moFc2GnYXcBMeiYrbQ14BC7mGxAM3hHe7",
+        "what": "control: raw.githubusercontent.com/out-layer/outlayer/.../vault_contract.wasm (public, 192 KB, correct sha256)",
+        "result": "yield failed, no download: no worker with the download capability is serving testnet"
+      }
+    ],
+    "tunnel": {
+      "url": "https://vertical-spears-arlington-neutral.trycloudflare.com",
+      "servesCorrectBytes": true,
+      "adapterSetWasmUrlTx": "77gHZDw92VhJMHAq67vkzkqdCc5qL4XKNApBGkapXKyS"
+    },
+    "workersPage": {
+      "readAt": "2026-10-23T14:47Z (dashboard local time 21:46)",
+      "source": "https://app.outlayer.ai/workers",
+      "mainnet": [
+        "mainnet-downloader-7cb145d2\u2026 online (169h)",
+        "mainnet-executor-b9c018f9\u2026 x2 online",
+        "mainnet-keystore online"
+      ],
+      "testnet": [
+        "testnet-executor-2ebb053d\u2026 online, uptime 0h 0m, completed 170, failed 19",
+        "testnet-keystore online"
+      ],
+      "reading": "no testnet worker with the download capability is registered, which is why uncached WasmUrl jobs are never fetched"
+    },
+    "retryWindow": {
+      "from": "2026-10-23T15:05Z",
+      "to": "2026-10-23T17:03Z",
+      "every": "15 min",
+      "control": "raw.githubusercontent.com/out-layer/outlayer/.../vault_contract.wasm",
+      "txs": [
+        "EdDSHcv3jgkuxLgNWkjhD21T1HVP1rFYpbwMAuXzoLxG",
+        "CNqgpd9RvFWqiu5jtMiD9TEBqyMGaFpEqB5QHn8jJuVX",
+        "2uYLmWza8rpeYNG1r1zctGcQvAaqWc3wvR5Nh8QYbiEc",
+        "A3uhgcv4sYvj2DKk8uzL1HyLuEnLGti7ZoxHq8TFp71p",
+        "2QivfbucV4MAr39M4rYrkdcH34tQvr94iFbM2D9jacxr",
+        "GJCLbHQwZaVWRQdCrqx85bymcD1MChxzKHmxaBqjzD75",
+        "5dfM6CXV6Ba4vFsqbANAEbkAUGnjFgNbJjS2BYMoZsS3",
+        "BXtKVwt5t3ZL8ujpa3iCByycoXZwwidegptyvbCZcn2C",
+        "CyUEJeHCRn8QR83CtJTBsygjEsmKe9FUZRQBcuJjFcgu"
+      ],
+      "result": "all 9 yield-failed without a download; no testnet downloader for the whole window"
+    }
+  },
+  "finalState": {
+    "at": "2026-10-23T17:05Z",
+    "tunnel": "torn down (hosting record kept as release/hosting-tunnel-2026-10-23.json)",
+    "keeper": "stopped",
+    "adapterWasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/ccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8.wasm (set back; FastFS data uploaded under receivers outlayer.testnet and fastfs.testnet)",
+    "gates": {
+      "G-01": "partial: Aurora->NEAR half proven on testnet; callback half not executed",
+      "G-02": "blocked by OutLayer testnet (no download-capable worker)",
+      "G-03": "local only (Rust vectors byte-identical)",
+      "G-04": "local only (Foundry + adapter unit tests); on-chain negatives not executed"
+    },
+    "notPrivate": "this deployment must not be described as operator-private",
+    "adapterSetWasmUrlBackTx": "3DAQUD2DLgskEbpccHRqXons7k5ZAB7kDWx4A6AWmnxu"
+  },
+  "golden": {
+    "asset": {
+      "tokenId": "4",
+      "registerTx": "0x48352a91ce00e445b2842a15521b531dca6d4436553bd0e3d6c95f9c3833317d",
+      "verifyAndMintTx": "0xb27430ff6fab590dcfd91da43bcbf5319c6ac4d4d36228613210c7c8c9a88381"
+    },
+    "key": {
+      "keyRequestId": "0x1c6eb4a6fbc49e2c5b9ec327679902bea3b502fb72fe3d97a3cba3f01ee26359",
+      "prepareTx": "0xcb7e6790bc9bf8917d9fd6d79b2028ee307f253ae2ae17a3a36306852d9b278f",
+      "prepareBlock": "276726721",
+      "xccPrecompileLog": null,
+      "adapterAfterRequest": {
+        "status": "Dispatched",
+        "dispatchedAtMs": 1794111885816
+      },
+      "prepared": {
+        "keyId": "0xba5030d8a2c3debb78e34d1858fa1bfb909763d6693f36ed5d8c7b21713aaccd",
+        "sealedBlobHash": "0x59681e4417443d6e09eb5b7ddf751360d1c6bb8206b8a98a926e94f228e51637",
+        "spkiBytes": 294,
+        "onKeyPreparedTx": "0xe665b37ccff5aede235cccfcc02bba538470f11fd32e50760818464612da291e",
+        "callbackFrom": "0x780dfa1e400790fffaec39cf89c4c8182843570c",
+        "adapterRecord": {
+          "deliveredToAurora": true,
+          "dispatchedAtMs": 1794111885816,
+          "keyId": "0xba5030d8a2c3debb78e34d1858fa1bfb909763d6693f36ed5d8c7b21713aaccd",
+          "lastError": null,
+          "owner": "0x1dfb61d5b1975a2f536658d367363d9b346b578b",
+          "sealedBlobHash": "0x59681e4417443d6e09eb5b7ddf751360d1c6bb8206b8a98a926e94f228e51637",
+          "status": "Ready",
+          "sealedBlobBase64Len": 100
+        }
+      }
+    },
+    "auction": {
+      "auctionId": "2",
+      "createTx": "0x493bdfe942242967edf556a25c49ef1b9a0e9f2f3819b54ad3fe2f122b2efcaf",
+      "endTime": "1794112144"
+    },
+    "bids": [
+      {
+        "bidder": "0xE34D0Bed1C240BD7aB3de3e5eAA88b049db6d4D4",
+        "bidIndex": 0,
+        "tx": "0xc52139bfb1ac5d70af0d29d7bfc5e3152b668d56955365dd16d551d9d5416a4b",
+        "digestAfter": "0xa92b8d98b1d2cbda4db0f9201758847bbcd563386dcba03bf359586cb37a9f2c"
+      },
+      {
+        "bidder": "0xA7E804Fa5bfFc02Ea1BfA5BB6c70d3D74E89DA33",
+        "bidIndex": 1,
+        "tx": "0x2feee2633c82d820bb89418a439eaeca850b8d8ba590e5c734f4d0a81b3f563a",
+        "digestAfter": "0x1f601b26813f16bca706dff02290d7f34f58ca5e8edafa2a738f8d1c0e753fa4"
+      },
+      {
+        "bidder": "0xB5492Ca31DCE2fFDB7D885970A2D1C8db477242e",
+        "bidIndex": 2,
+        "tx": "0xe2ea024a74e3499a43bc4dd65056ce13739201c1b8425069a7a86e248a116856",
+        "digestAfter": "0xa8ae687a71edf63b0e535d68efcc55524109ee297b2d3218f86d0fc7d92150f1"
+      }
+    ],
+    "settlement": {
+      "requested": {
+        "requestId": "0xf945f1ca56792ec7e57e63a69f1870bff37b1cc3a5753ec5881fd00f415d84f7",
+        "attempt": 1,
+        "bidDigest": "0xa8ae687a71edf63b0e535d68efcc55524109ee297b2d3218f86d0fc7d92150f1",
+        "bidCount": 3,
+        "tx": "0x97c726a20a25994db94f4c3bdbaf3892a817ac326fc161220433a03b757ad8bd"
+      },
+      "adapterAfterRequest": {
+        "status": "Requested",
+        "bidCount": 3,
+        "keyId": "0xba5030d8a2c3debb78e34d1858fa1bfb909763d6693f36ed5d8c7b21713aaccd"
+      },
+      "accepted": {
+        "tx": "0xf15afc4eefa3a602eba71522779d254a186ee61fad69e8a71f31c2c70a90e715",
+        "callbackFrom": "0x780dfa1e400790fffaec39cf89c4c8182843570c",
+        "outcome": 0,
+        "winner": "0xE34D0Bed1C240BD7aB3de3e5eAA88b049db6d4D4",
+        "winningAmountUnits": "150000000",
+        "executionIdHash": "0x18122d7a3e3d1271ed2ca59e81e5aa8808c5955e96cbe02034485172cc149286",
+        "outputHash": "0xb75ca5201a02bf538e29a6556a3ea730f8ba28d9de6412aa14186d93659dfd2f",
+        "adapterRecord": {
+          "attempt": 1,
+          "auctionId": "2",
+          "bidCount": 3,
+          "bidDigest": "0xa8ae687a71edf63b0e535d68efcc55524109ee297b2d3218f86d0fc7d92150f1",
+          "dispatchedAtMs": 1794112158801,
+          "endTime": 1794112144,
+          "keyId": "0xba5030d8a2c3debb78e34d1858fa1bfb909763d6693f36ed5d8c7b21713aaccd",
+          "keyRequestId": "0x1c6eb4a6fbc49e2c5b9ec327679902bea3b502fb72fe3d97a3cba3f01ee26359",
+          "lastError": null,
+          "manifestSha256": "0xfb45da6d17374321e2563237d026935c654c753ab8ef0b7858a840c0d9a76181",
+          "outputSha256": "0xb75ca5201a02bf538e29a6556a3ea730f8ba28d9de6412aa14186d93659dfd2f",
+          "reserveUnits": "100000000",
+          "result": {
+            "attempt": 1,
+            "auctionContract": "0x9802a6510d47941b139720d54bdbd61954ed5c5a",
+            "auctionId": "2",
+            "bidCount": 3,
+            "bidDigest": "0xa8ae687a71edf63b0e535d68efcc55524109ee297b2d3218f86d0fc7d92150f1",
+            "chainId": "1313161555",
+            "configHash": "0xffb2de13df5deec07bfd1eb049c68228c10a521b891becb78670cb51f07f2ebe",
+            "invalidBidCount": 0,
+            "keyId": "0xba5030d8a2c3debb78e34d1858fa1bfb909763d6693f36ed5d8c7b21713aaccd",
+            "outcome": "WINNER",
+            "protocolVersion": 1,
+            "requestId": "0xf945f1ca56792ec7e57e63a69f1870bff37b1cc3a5753ec5881fd00f415d84f7",
+            "solverCodeHash": "0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8",
+            "validBidCount": 3,
+            "winner": "0xe34d0bed1c240bd7ab3de3e5eaa88b049db6d4d4",
+            "winningAmountUnits": "150000000"
+          },
+          "settlementDeadline": 1794113944,
+          "status": "Delivered"
+        }
+      }
+    },
+    "exits": {
+      "refundB": "0x939f68f5593d0b9ea56c77f0adea50a0505dbb228d18ad5a3861b2cc496a2509",
+      "claimWinA": "0x85c95d4d4e6b8e70ed799c8a5ad894f9c408664cd7f8a348ee8a3df30873343d",
+      "refundC": "0x93cdf433c39df71369f1d5d6c88508b781a85b5738eb222950e834e18a6ec95a",
+      "escrowAfter": "30000000"
+    }
+  },
+  "negatives": {
+    "strangerOnSettlementResult": {
+      "from": "0xE34D0Bed1C240BD7aB3de3e5eAA88b049db6d4D4",
+      "simulated": true,
+      "revert": "UntrustedCallback()"
+    },
+    "keeperRequestKey": {
+      "tx": null,
+      "ok": false,
+      "output": "_hash\": \"0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8\"\n\u2502                                     }\n\u2502                       gas:          300.0 Tgas\n\u2502                       deposit:      0 NEAR\n\u2502     \n\u251c  Your transaction was signed successfully.\n\u2502    Public key: ed25519:3r4uut35DZ8Tb5QqxYMWxFsqmPSv85jtjFgefs7w5c7h\n\u2502    Signature:  ed25519:5sXzr64nzqJmanp38uZRseznFpwHmdNVXV94CD1z7tLMCGPd8y1J3FjkEfHVrU9nsRme5PWKqvqotq89mD3ngLAe\n\u2502     \n\nHere is your console command if you need to script it or re-run:\n    /Users/yoga/.local/lib/node_modules/near-cli-rs/node_modules/.bin_real/near contract call-function as-transaction maskbid-adapter.testnet request_key json-args '{\"key_request_id\":\"0x1111111111111111111111111111111111111111111111111111111111111111\",\"owner\":\"0xE34D0Bed1C240BD7aB3de3e5eAA88b049db6d4D4\",\"config_hash\":\"0xffb2de13df5deec07bfd1eb049c68228c10a521b891becb78670cb51f07f2ebe\",\"solver_code_hash\":\"0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8\"}' prepaid-gas '300.0 Tgas' attached-deposit '0 NEAR' sign-as maskbid-keeper.testnet network-config testnet sign-with-legacy-keychain send\n\n\n`near` CLI has a new update available 0.30.1 \u2192  0.31.1\nTo update `near` CLI use: /Users/yoga/.local/lib/node_modules/near-cli-rs/node_modules/.bin_real/near extensions self-update\nError: \n   0: Error: An error occurred during a `FunctionCall` action.\n      ExecutionError(\"WebAssembly trap: An `unreachable` opcode was executed.\")\n\nLocation:\n   src/common.rs:1808\n"
+    },
+    "directProdWasm": {
+      "tx": null,
+      "ok": true,
+      "output": "null\n"
+    },
+    "otherBuildUnseal": {
+      "tx": null,
+      "ok": true,
+      "output": "{\n  \"keyIdMatches\": null,\n  \"mode\": \"UNSEAL_PROBE\",\n  \"unsealed\": false\n}\n"
+    }
+  },
+  "stale": {
+    "auction": {
+      "auctionId": "4",
+      "keyRequestId": "0x8007af3a1dbd8d5e4e517b80734aca474738fee265465bff9e2ac2b754cca541",
+      "createTx": "0x0d7e417d185fc3cd0eaf553678a629ed276122c7dab508f894a6c94389794fe0"
+    },
+    "requests": {
+      "attempt1": {
+        "requestId": "0x0d148e096e21a2e3b62b3f9dc73a38cf673165b295a17b7e983a0ab314c905ef",
+        "tx": "0x603c0705b5fe11e93ac49ee7a5d0b1d2aeb539b8faa957b4d11e46729ec2cabb"
+      },
+      "attempt2": {
+        "requestId": "0xf1abb708f0173494897a0d8268b45fdad96dc88e7a74fc0dd155f4ad4eedee18",
+        "tx": "0x44ead0c72eaa701be8f5a6e6a54fd9136ba65eed4dd3096d1be95dff211716f1"
+      }
+    },
+    "attempt2Accepted": {
+      "tx": "0x27f775afb5fc7b8b774eec073612b95539418ed1bb6cfd2607e66cd7ea221f6c",
+      "requestId": "0xf1abb708f0173494897a0d8268b45fdad96dc88e7a74fc0dd155f4ad4eedee18",
+      "winner": "0xA7E804Fa5bfFc02Ea1BfA5BB6c70d3D74E89DA33",
+      "winningAmountUnits": "130000000",
+      "onlyActiveAttemptAccepted": true
+    },
+    "lateAttempt1": {
+      "adapterRevert": "aurora revert 0xde4168ba (WrongState)",
+      "note": "Late attempt-1 result was submitted after attempt 2 had already been accepted and the auction left Ended; Aurora rejected it with WrongState, not StaleRequest (0x4e73400c). StaleRequest is covered by Foundry Xcc.t.sol. First submit_manifest by the script failed (NEAR nonce collision with the keeper's own transaction) and was replayed by hand.",
+      "attempt1Request": "0x0d148e096e21a2e3b62b3f9dc73a38cf673165b295a17b7e983a0ab314c905ef"
+    },
+    "status": "passed (late delivery rejected as WrongState)"
+  },
+  "recovery": {
+    "auctions": [
+      {
+        "tag": "nosale",
+        "auctionId": "5",
+        "tokenId": "7",
+        "createTx": "0xc4a9a48137d60b5cf9fa1afee6af8e46439ca7ad91ba6ff2301da512fe77397c"
+      },
+      {
+        "tag": "default",
+        "auctionId": "6",
+        "tokenId": "8",
+        "createTx": "0x7b9deeac3271310ed080d05667e96e4b11c571816b48a89a0a0faca98de0b608"
+      },
+      {
+        "tag": "timeout",
+        "auctionId": "7",
+        "tokenId": "9",
+        "createTx": "0x1b6c03b6555e6d625b42001d27ce25b58600063dc8c5e18915123ed4f909498d"
+      }
+    ],
+    "nosale": {
+      "acceptedTx": "0x6fe53e92cc431fe5ac86a2f5ad797664bc740a5ada1928dfb236f1f7d965495b",
+      "outcome": "NoSale",
+      "cancelReason": "NoValidBid"
+    },
+    "default": {
+      "acceptedTx": "0x169d40b830467f6fd76fba538fd8f05ddc6003d213bce28977044965e7c86bea",
+      "winnerDefaultedTx": "0xa4782f18f60ea3d8454d36e4a92878c556be67a3749faa7532828e2c08b7011c",
+      "forfeitedUnits": "10000000"
+    },
+    "timeout": {
+      "attempts": 3,
+      "cancelTx": "0x0a4b9ae59e5f50107cefcb139893979ab495591c8bfe17fd46cf4c91b481586e",
+      "cancelReason": "SolverTimeout",
+      "acceptedEvents": 0
+    },
+    "accounting": {
+      "status": "verified after the run from chain state, not by the script",
+      "note": "the script's last aggregate assert (escrow back to start) was mis-specified: withdrawSellerCredit also paid 30 mUSDC of older defaulted-winner credit from auctions of earlier runs. Fixed in scripts/testnet-gates.mjs.",
+      "tokenNetSinceFirstRecoveryBid_mUSDC": {
+        "A": -10,
+        "B": 0,
+        "S": 40,
+        "escrow": -30
+      },
+      "sellerCreditsAfter": "0",
+      "lockedDepositsAfter": "20000000",
+      "escrowAfter": "20000000"
+    }
+  }
+}

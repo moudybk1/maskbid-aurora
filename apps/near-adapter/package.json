@@ -1,0 +1,7 @@
+{
+  "name": "@maskbid/near-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NEAR contract (near-sdk) between the Aurora auction and the OutLayer solver. Not part of the npm build; see build.sh.",
+  "scripts": { "build": "./build.sh", "test": "cargo test" }
+}

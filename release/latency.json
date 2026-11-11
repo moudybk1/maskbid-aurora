@@ -1,0 +1,37 @@
+{
+  "at": "2026-11-08T11:45:51.341Z",
+  "chainId": 1313161555,
+  "auction": "0x9802a6510D47941B139720d54bdBd61954ed5C5A",
+  "keyPreparation": {
+    "samples": 7,
+    "min_s": 9,
+    "p50_s": 10,
+    "p95_s": 14,
+    "max_s": 14,
+    "values_s": [
+      11,
+      9,
+      10,
+      14,
+      9,
+      10,
+      10
+    ]
+  },
+  "settlement": {
+    "samples": 6,
+    "min_s": 15,
+    "p50_s": 17,
+    "p95_s": 38,
+    "max_s": 38,
+    "values_s": [
+      17,
+      15,
+      27,
+      17,
+      30,
+      38
+    ]
+  },
+  "note": "includes the keeper manifest hop (poll 6 s), OutLayer queue and TEE run, and the Aurora callback"
+}
