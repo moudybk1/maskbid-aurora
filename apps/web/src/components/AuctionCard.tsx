@@ -33,7 +33,7 @@ export function AuctionCard({ v, maxBids }: { v: AuctionView; maxBids: number })
           <b>{formatUnits6(sold ? a.winningAmountUnits : a.reserveUnits)}<small>{TOKEN_SYMBOL}</small></b>
         </div>
         <div className="bidbar">
-          <div className="bidbar-label"><span>{a.bidCount} sealed bid{a.bidCount === 1 ? "" : "s"}</span><span>{maxBids - a.bidCount} seats left</span></div>
+          <div className="bidbar-label"><span>{a.bidCount} sealed bid{a.bidCount === 1 ? "" : "s"}</span>{(phase === "Live" || phase === "Scheduled") && <span>{maxBids - a.bidCount} seats left</span>}</div>
           <div className="bidbar-track"><div className="bidbar-fill" style={{ width: `${(100 * a.bidCount) / maxBids}%` }} /></div>
         </div>
         <span className="lot-go">View lot <Arrow /></span>

@@ -40,7 +40,7 @@ export default function NewAsset() {
         <Field id="condition" label="Condition"><input id="condition" className="input" required maxLength={80} value={f.condition} onChange={set("condition")} disabled={Boolean(frozen)} placeholder="e.g. excellent, serviced 2025" /></Field>
         <Field id="description" label="Description" help="Up to 5000 characters. No personal data."><textarea id="description" required maxLength={5000} value={f.description} onChange={set("description")} disabled={Boolean(frozen)} /></Field>
         <Field id="images" label="Image URLs" help="Up to 4 https URLs, one per line. Use images you have the right to publish."><textarea id="images" value={f.images} onChange={set("images")} disabled={Boolean(frozen)} style={{ minHeight: 80 }} /></Field>
-        <label className="checkbox"><input type="checkbox" checked={f.isDemo} onChange={set("isDemo")} disabled={Boolean(frozen)} /><span>Demo asset. {COPY.demoAsset}</span></label>
+        <label className="checkbox"><input type="checkbox" checked={f.isDemo} onChange={set("isDemo")} disabled={Boolean(frozen)} /><span>{COPY.demoAsset}</span></label>
         {error && <Alert tone="error">{error}</Alert>}
         {!frozen ? <button className="btn" type="submit" style={{ marginTop: 16 }}>Freeze metadata</button> : (
           <div className="stack" style={{ marginTop: 16 }}>

@@ -382,8 +382,9 @@ async function seed() {
     { title: "Genesis Pass #042", description: "Founding member pass, one of 100.", category: "digital_collectible", condition: "Mint", reserve: "50", deposit: "5", bids: [] },
   ];
   step(`seed: ${lots.length} keys through the TEE`);
-  const requests = [];
-  for (const lot of lots) {
+  // SEED_KEY_REQUESTS=<id>,<id>,... reuses key requests of an earlier run that the TEE answered late; only the rest are requested.
+  const requests = (process.env.SEED_KEY_REQUESTS ?? "").split(",").filter(Boolean);
+  for (const lot of lots.slice(requests.length)) {
     const r = await tx(S, auction, "prepareAuctionKey", [keccak256(stringToBytes(`seed-${lot.title}-${Date.now()}`))]);
     requests.push(r.logs.map((l) => { try { return decodeEventLog({ abi: auctionAbi, ...l }); } catch { return null; } }).find((e) => e?.eventName === "KeyRequested").args.keyRequestId);
   }

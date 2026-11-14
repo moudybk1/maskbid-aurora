@@ -32,5 +32,15 @@ substitute a solver response (blueprint 13 §7). Two full rehearsals with fresh 
 
 ## Fallback
 
-If the live take fails, show the recorded run labelled with its transaction hashes (`release/gate-run.json`). Do not
-claim a World ID flow or a verified TDX attestation.
+If OutLayer testnet does not answer (on 2026-11-14 its worker resolved requests minutes late, so every
+`prepareAuctionKey` hit the two-minute timeout), record the live flow on the local chain and the TEE evidence from testnet:
+
+1. README step 3: `npm run anvil`, `npm run deploy:local`, `npm run solver`, `npm run web`. "Connect wallet" offers the
+   Anvil demo accounts, so no MetaMask is needed: seller `#0`, verifier `#7`, bidders A / B / C. Three bids by hand take
+   about two minutes, so a 3 minute lot is tight; publish it right before the take or pick 10 minutes.
+2. Say on camera that this run uses the local mock adapter, not a TEE. `/config` and every evidence page carry that banner.
+3. For the private path show the recorded testnet auctions with `npm run web:live`: `/auctions/2/evidence` (golden) and
+   5, 6, 7 (recoveries); their transaction hashes are in `release/gate-run.json`. Only one `next dev` runs per checkout,
+   so stop the local web before starting this one.
+
+Do not claim a World ID flow or a verified TDX attestation.

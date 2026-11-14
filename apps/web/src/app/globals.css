@@ -128,7 +128,7 @@ main.container h1 + p.muted, main.container h1 + .muted, main.container h1 ~ p.m
 .badge-success::before { animation: live 2s infinite; }
 @keyframes live { 50% { box-shadow: 0 0 0 4px rgba(31, 113, 73, .18); } }
 
-.alert { position: relative; border-radius: var(--r-sm); padding: 14px 16px 14px 40px; margin: 12px 0; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); font-size: 16px; }
+.alert { position: relative; border-radius: var(--r-sm); padding: 14px 16px 14px 40px; margin: 12px 0; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); font-size: 16px; overflow-wrap: anywhere; }
 .alert::before { content: ""; position: absolute; left: 17px; top: 22px; width: 8px; height: 8px; border-radius: 50%; background: var(--soft); }
 .alert strong { display: block; font: 500 15px var(--font-ui); margin-bottom: 2px; }
 .alert-info { background: var(--info-bg); box-shadow: none; } .alert-info::before { background: var(--info); }
