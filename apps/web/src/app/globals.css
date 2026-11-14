@@ -262,8 +262,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .sky .c3 { width: 46vw; left: 27vw; bottom: -9%; aspect-ratio: 3.3 / 1; }
 .sky .c4 { width: 18vw; right: -4vw; top: 61%; } /* between the second line and the text below it, never behind words */
 .sky .c5 { width: 13vw; left: 9vw; top: 12%; aspect-ratio: 2.6 / 1; opacity: .9; }
-.hero-in { position: relative; display: grid; grid-template-rows: auto 1fr auto; padding-top: 140px; padding-bottom: 44px; min-height: inherit; }
-.hero-pill { justify-self: center; margin: 0; padding: 5px 14px; border-radius: var(--pill); font-size: 15px; box-shadow: inset 0 0 0 1px rgba(39, 52, 74, .5); color: var(--ink); }
+.hero-in { position: relative; display: grid; grid-template-rows: 1fr auto; padding-top: 140px; padding-bottom: 44px; min-height: inherit; }
 .hero-mark { position: relative; isolation: isolate; align-self: center; font-size: clamp(40px, 5vw, 82px); margin-top: -2vh; }
 .hero-title { margin: 0; font-size: 1em; line-height: 1; letter-spacing: -0.045em; font-weight: 500; }
 .hero-title span { display: block; width: fit-content; white-space: nowrap; }
@@ -319,21 +318,19 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 /* the envelope sets off as soon as it is painted, so on a first visit it flies into the intro window */
 .hero-flight[data-ready] { animation: fly-in 1.6s cubic-bezier(.16, .8, .24, 1) both, bob 3.4s ease-in-out 1.6s infinite alternate; }
 /* repeat visit: a short rise as the page appears */
-:root[data-seen] body:has(.home) .header, :root[data-seen] .hero-pill, :root[data-seen] .hero-title span, :root[data-seen] .hero-foot { animation: rise-in .9s var(--ease) both; }
-:root[data-seen] .hero-pill { animation-delay: .05s; }
+:root[data-seen] body:has(.home) .header, :root[data-seen] .hero-title span, :root[data-seen] .hero-foot { animation: rise-in .9s var(--ease) both; }
 :root[data-seen] .hero-title span:first-child { animation-delay: .12s; }
 :root[data-seen] .hero-title span:last-child { animation-delay: .22s; }
 :root[data-seen] .hero-foot { animation-delay: .38s; }
 /* first visit: held behind the intro, released as it opens */
-:root:not([data-seen]) body:has(.home) .header, :root:not([data-seen]) .hero-pill, :root:not([data-seen]) .hero-title span, :root:not([data-seen]) .hero-foot {
+:root:not([data-seen]) body:has(.home) .header, :root:not([data-seen]) .hero-title span, :root:not([data-seen]) .hero-foot {
   opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-:root[data-open] body:has(.home) .header, :root[data-open] .hero-pill, :root[data-open] .hero-title span, :root[data-open] .hero-foot { opacity: 1; transform: none; }
+:root[data-open] body:has(.home) .header, :root[data-open] .hero-title span, :root[data-open] .hero-foot { opacity: 1; transform: none; }
 :root[data-open] body:has(.home) .header { transition-delay: .5s; }
-:root[data-open] .hero-pill { transition-delay: .45s; }
 :root[data-open] .hero-title span:first-child { transition-delay: .55s; }
 :root[data-open] .hero-title span:last-child { transition-delay: .67s; }
 :root[data-open] .hero-foot { transition-delay: .85s; }
-:root:not([data-seen]):not([data-open]) body:has(.home) .header, :root:not([data-seen]):not([data-open]) .hero-pill { animation: release .9s var(--ease) 4.05s forwards; }
+:root:not([data-seen]):not([data-open]) body:has(.home) .header { animation: release .9s var(--ease) 4.05s forwards; }
 :root:not([data-seen]):not([data-open]) .hero-title span:first-child { animation: release .9s var(--ease) 4.15s forwards; }
 :root:not([data-seen]):not([data-open]) .hero-title span:last-child { animation: release .9s var(--ease) 4.27s forwards; }
 :root:not([data-seen]):not([data-open]) .hero-foot { animation: release .9s var(--ease) 4.45s forwards; }

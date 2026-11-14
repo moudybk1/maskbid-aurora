@@ -24,7 +24,6 @@ export function Hero() {
         <span className="intro-tag b">Clear outcomes</span>
       </div>
       <div className="hero-in container">
-        <p className="hero-pill">Sealed-bid auctions on Aurora</p>
         <div className="hero-mark">
           <h1 id="hero-title" className="hero-title"><span>Private bids.</span><span>Clear outcomes.</span></h1>
           <Stipple kind="flight" seed={7} className="hero-flight" />
