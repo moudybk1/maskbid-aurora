@@ -22,8 +22,9 @@ static OUTLAYER_MANIFEST: [u8; include_bytes!("../manifest.json").len()] = *incl
 #[link_section = "outlayer.manifest"]
 static OUTLAYER_MANIFEST: [u8; include_bytes!("../manifest.probe.json").len()] = *include_bytes!("../manifest.probe.json");
 
-/// Must match manifest.json `callers.contract.only` and the auction contract's `nearAdapterAccount`.
-const PINNED_ADAPTER: &str = "maskbid-adapter.testnet";
+/// The only account that may run this build: the MaskBid contract, which calls OutLayer itself.
+/// Must match manifest.json `callers.contract.only`.
+const PINNED_CALLER: &str = "maskbid-v2.testnet";
 const KEY_PATH: &str = "auction_keys";
 const MAX_INPUT_BYTES: usize = 128 * 1024;
 
@@ -96,8 +97,8 @@ fn main() {
     // The manifest's `callers.contract.only` already refuses other callers before this code runs; this is the in-code check.
     if !cfg!(feature = "probe") {
         match std::env::var("NEAR_PREDECESSOR_ID") {
-            Ok(p) if p == PINNED_ADAPTER => {}
-            Ok(_) => fatal("RUNTIME_FAILURE", "", false, "caller is not the pinned adapter"),
+            Ok(p) if p == PINNED_CALLER => {}
+            Ok(_) => fatal("RUNTIME_FAILURE", "", false, "caller is not the pinned contract"),
             Err(_) if cfg!(target_arch = "wasm32") => fatal("RUNTIME_FAILURE", "", false, "no predecessor context"),
             Err(_) => {}
         }

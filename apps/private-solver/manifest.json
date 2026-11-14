@@ -2,5 +2,5 @@
   "encryption_keys": [
     { "path": "auction_keys", "bind": "wasm", "caller": "predecessor" }
   ],
-  "callers": { "contract": { "only": ["maskbid-adapter.testnet"] } }
+  "callers": { "contract": { "only": ["maskbid-v2.testnet"] } }
 }

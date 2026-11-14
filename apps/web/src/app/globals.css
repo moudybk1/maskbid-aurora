@@ -52,6 +52,9 @@ small, .small { font-size: 15px; line-height: 1.5; }
 .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
 main.container { flex: 1; padding-top: 132px; padding-bottom: 140px; }
 main.container:has(> .home) { max-width: none; padding: 0; }
+main.container:has(> .market) { max-width: none; padding-left: 0; padding-right: 0; }
+.market { overflow: clip; }
+.home section[id] { scroll-margin-top: 24px; }
 .reading { max-width: var(--reading); }
 .form { max-width: var(--form); }
 main > .reading, main > .form { margin-inline: auto; } /* single-column pages sit in the middle of the container */
@@ -601,23 +604,23 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .footer .f1 { width: 40vw; left: -8vw; bottom: -6%; }
 .footer .f2 { width: 30vw; right: -6vw; bottom: 16%; }
 .footer .f3 { width: 46vw; left: 30vw; bottom: -18%; aspect-ratio: 3.3 / 1; }
-.footer-panel { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; background: var(--bg); border-radius: 6px; box-shadow: 0 1px 0 rgba(39, 52, 74, .06); }
-.footer-intro, .footer-cols { padding: 30px 28px 56px; min-height: 230px; }
-.footer-cols { box-shadow: inset 1px 0 0 var(--line); }
-.footer-intro p { margin: 16px 0 0; max-width: 32ch; color: var(--soft); }
-.footer-cols h3 { font: 400 15px var(--font-body, serif); color: var(--faint); letter-spacing: 0; margin-bottom: 16px; }
-.footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.footer a { color: var(--ink); text-decoration: none; transition: color .2s; }
-.footer a:hover { color: var(--navy-3); text-decoration: underline; }
-.footer-note { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 170px 0 30px; font-size: 15px; }
-.footer-note svg { width: 18px; height: 18px; }
-@media (max-width: 800px) {
-  .footer-panel { grid-template-columns: 1fr 1fr; }
-  .footer-intro { grid-column: 1 / -1; min-height: 0; padding-bottom: 20px; }
-  .footer-cols { min-height: 0; padding: 22px 22px 30px; box-shadow: inset 0 1px 0 var(--line); }
-  .footer-cols:nth-child(3) { box-shadow: inset 0 1px 0 var(--line), inset 1px 0 0 var(--line); }
-  .footer-cols:last-child { grid-column: 1 / -1; }
-  .footer-note { padding-top: 110px; }
+.footer-panel { max-width: calc(var(--container) - 2 * var(--gutter)); margin: 0 auto; border-radius: 12px; background: var(--bg); box-shadow: 0 10px 34px rgba(39, 52, 74, .08), inset 0 0 0 1px rgba(39, 52, 74, .06); }
+.footer-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); gap: 48px; padding: 44px 44px 40px; }
+.footer-intro p { margin: 14px 0 22px; max-width: 34ch; color: var(--soft); }
+.footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.footer-cols h3 { font: 500 12px var(--font-ui); text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 6px 0 18px; }
+.footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.footer-cols a { color: var(--ink); text-decoration: none; text-underline-offset: 3px; transition: color .2s; }
+.footer-cols a:hover { color: var(--navy-3); text-decoration: underline; }
+.footer-base { display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; padding: 18px 44px; box-shadow: inset 0 1px 0 var(--line); font: 13px var(--font-ui); color: var(--faint); }
+.footer-net { display: inline-flex; align-items: center; gap: 8px; }
+.footer-net i { width: 7px; height: 7px; border-radius: 50%; background: #e0794f; box-shadow: 0 0 0 3px rgba(224, 121, 79, .18); }
+/* the closing wordmark echoes the opening intro: same serif, set into the clouds */
+.footer-word { margin: 0; padding: clamp(28px, 4vw, 56px) 0 clamp(10px, 1.4vw, 22px); text-align: center; font: 500 clamp(72px, 15vw, 236px)/.78 var(--font-body, serif); letter-spacing: -0.045em; color: rgba(39, 52, 74, .82); user-select: none; }
+@media (max-width: 860px) {
+  .footer-top { grid-template-columns: 1fr; gap: 32px; padding: 32px 24px 28px; }
+  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
+  .footer-base { padding: 16px 24px; }
   .footer .f1 { width: 80vw; } .footer .f2 { width: 60vw; } .footer .f3 { width: 110vw; left: -5vw; }
 }
 

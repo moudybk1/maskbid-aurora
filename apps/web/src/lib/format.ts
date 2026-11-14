@@ -20,3 +20,9 @@ export function fmtDuration(seconds: bigint | number): string {
   if (s % 60 === 0) return `${s / 60} min`;
   return `${s} s`;
 }
+
+/** yoctoNEAR as NEAR with up to four decimals. */
+export function formatNear(yocto: bigint): string {
+  const s = (yocto / 10n ** 20n).toString().padStart(5, "0");
+  return `${s.slice(0, -4)}.${s.slice(-4)}`.replace(/\.?0+$/, "");
+}

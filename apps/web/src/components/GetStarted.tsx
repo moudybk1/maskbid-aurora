@@ -1,12 +1,12 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { formatMoney } from "@maskbid/protocol";
-import { assetEvents, auctionEvents, contracts, publicClient, readAsset, readAssetBalance, readEligible, readTokenBalance } from "@/lib/client";
-import { IS_LOCAL } from "@/lib/config";
-import { useChainData } from "@/lib/data";
+import { listAssets, listBidsOf, readEligible, readTokenBalance } from "@/lib/client";
+import { loadAuctions, useChainData } from "@/lib/data";
+import { nearBalance } from "@/lib/near";
 import { useTx } from "@/lib/tx";
 import { useWallet } from "@/lib/wallet";
-import { write } from "@/lib/write";
+import { faucetCall } from "@/lib/write";
 import { Arrow } from "./Hero";
 import { TxStatus } from "./ui";
 
@@ -24,41 +24,34 @@ export function GetStarted({ fixed }: { fixed?: Track }) {
   const { state: tx, run } = useTx();
   const { data, refresh } = useChainData(async () => {
     if (!address) return undefined;
-    const [eligible, balance, gas, bids, registered, listed] = await Promise.all([
-      readEligible(address), readTokenBalance(address), publicClient.getBalance({ address }),
-      auctionEvents("BidPlaced", { bidder: address }), assetEvents("AssetRegistered", { issuer: address }), auctionEvents("AuctionCreated", { seller: address }),
-    ]);
-    const assets = await Promise.all(registered.map(async (l) => {
-      const id = l.args.tokenId as bigint;
-      const [a, held] = await Promise.all([readAsset(id), readAssetBalance(address, id)]);
-      return { id, verified: a.status === 1, listable: a.status === 1 && !a.redeemed && held === 1n };
-    }));
-    return { eligible, balance, gas, bid: bids.length > 0, registered: assets.length > 0, verified: assets.some((a) => a.verified), listable: assets.find((a) => a.listable)?.id, listed: listed.length > 0 };
+    const [eligible, balance, gas, { list }, all, bids] = await Promise.all([readEligible(address), readTokenBalance(address), nearBalance(address), loadAuctions(), listAssets(), listBidsOf(address)]);
+    const assets = all.filter(({ a }) => a.issuer === address).map(({ tokenId, a }) => ({ id: tokenId, verified: a.status === 1, listable: a.status === 1 && !a.redeemed && a.owner === address }));
+    return { eligible, balance, gas, bid: bids.length > 0, registered: assets.length > 0, verified: assets.some((a) => a.verified), listable: assets.find((a) => a.listable)?.id, listed: list.some((v) => v.a.seller === address) };
   }, [address, tx.status], 8000);
 
-  const ret = track === "bid" ? "/#start" : "/sell";
-  const connect: Step = { title: "Connect a wallet", text: "Connecting only reads your address. Nothing is sent until you sign.", done: Boolean(address),
-    cta: <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Connect wallet</button> };
+  const ret = track === "bid" ? "/auctions#start" : "/sell";
+  const connect: Step = { title: "Connect a NEAR testnet account", text: "Nothing is sent until you confirm an action.", done: Boolean(address),
+    cta: <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Connect account</button> };
   const verify: Step = { title: "Verify you are one person", text: "One verified person, one bid per auction. This is not KYC, and refunds never need it.", done: Boolean(data?.eligible),
-    cta: <a className="btn btn-sm" href={`/verify?return=${encodeURIComponent(ret)}`}>Verify this wallet <Arrow /></a> };
+    cta: <a className="btn btn-sm" href={`/verify?return=${encodeURIComponent(ret)}`}>Verify this account <Arrow /></a> };
 
-  // Testnet transactions need gas the wallet has to bring; the local chain's demo accounts are pre-funded.
-  const gas: Step[] = IS_LOCAL ? [] : [{ title: "Get testnet ETH for gas", text: "Every transaction on Aurora testnet costs a little ETH. The Aurora faucet sends some to your wallet for free.", done: (data?.gas ?? 0n) > 0n,
-    cta: <a className="btn btn-sm" href="https://aurora.dev/faucet" target="_blank" rel="noreferrer">Open the Aurora faucet <Arrow /></a> }];
+  // Gas is prepaid and mostly refunded, so an account needs about half a NEAR on hand to bid, and a little more to start a TEE run.
+  const gas: Step[] = [{ title: "Have testnet NEAR for gas", text: "Transactions on NEAR testnet prepay their gas in NEAR. Half a NEAR is plenty; the testnet faucet gives it away.", done: (data?.gas ?? 0n) >= 5n * 10n ** 23n,
+    cta: <a className="btn btn-sm" href="https://near-faucet.io/" target="_blank" rel="noreferrer">Open the NEAR testnet faucet <Arrow /></a> }];
 
   const steps: Step[] = track === "bid" ? [
     connect, verify, ...gas,
     { title: "Get mUSDC for the deposit", text: "Each bid locks a fixed deposit in the auction contract. The test token has a free faucet.", done: (data?.balance ?? 0n) > 0n,
       cta: <button type="button" className="btn btn-sm" disabled={tx.status === "signing" || tx.status === "confirming"}
-        onClick={() => address && run("Faucet 1,000 mUSDC", (c) => write(c, contracts().token, "faucet", [address])).then(refresh).catch(() => {})}>Get 1,000 test mUSDC</button>, extra: <TxStatus state={tx} /> },
+        onClick={() => address && run("Faucet 1,000 mUSDC", faucetCall(address)).then(refresh).catch(() => {})}>Get 1,000 test mUSDC</button>, extra: <TxStatus state={tx} /> },
     { title: "Place a sealed bid", text: "Open a live lot and type your amount. It is encrypted in this browser before it is sent.", done: Boolean(data?.bid),
-      cta: <a className="btn btn-sm" href="/#lots">Browse live lots <Arrow /></a>, extra: data && <span className="caption">Deposit varies by lot; you hold {formatMoney(data.balance)}.</span> },
+      cta: <a className="btn btn-sm" href="/auctions">Browse live lots <Arrow /></a>, extra: data && <span className="caption">Deposit varies by lot; you hold {formatMoney(data.balance)}.</span> },
   ] : [
     connect, verify, ...gas,
     { title: "Register your asset", text: "Describe it once. The details are frozen to a hash on chain and cannot be edited later.", done: Boolean(data?.registered),
       cta: <a className="btn btn-sm" href="/assets/new">Register asset <Arrow /></a> },
-    { title: "Get it reviewed", text: IS_LOCAL ? "A verifier checks the listing and mints its token to you. On this demo, switch to the verifier account and approve it in the Verifier queue." : "A verifier checks the listing and mints its token to you. This page updates when it is approved.", done: Boolean(data?.verified),
-      cta: IS_LOCAL ? <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Switch to verifier</button> : undefined },
+    { title: "Get it reviewed", text: "A verifier checks the listing and mints its token to you. This page updates when it is approved; with the demo accounts, switch to the verifier and approve it in the Verifier queue.", done: Boolean(data?.verified),
+      cta: w.demoAccounts.length > 0 ? <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Switch to verifier</button> : undefined },
     { title: "Publish the auction", text: "Set the public reserve, the deposit every bidder locks, and how long bidding stays open.", done: Boolean(data?.listed),
       cta: data?.listable !== undefined ? <a className="btn btn-sm" href={`/auctions/new?asset=${data.listable}`}>Create auction <Arrow /></a> : undefined },
   ];
@@ -89,7 +82,7 @@ export function GetStarted({ fixed }: { fixed?: Track }) {
       <div className="start-intro">
         <h2>{track === "bid" ? "Your first sealed bid" : "List your first asset"}</h2>
         <p className="muted">{track === "bid"
-          ? `${count} steps from wallet to sealed bid. Losing bids stay sealed for good; only the winning amount is ever made public.`
+          ? `${count} steps from account to sealed bid. Losing bids stay sealed for good; only the winning amount is ever made public.`
           : `${count} steps from a description to a live sealed-bid auction. A verifier approves the asset in between.`}</p>
         {toggle}
         <p className="start-progress" aria-live="polite"><b>{doneCount} of {steps.length}</b> done{address ? " · checked from the chain" : ""}</p>

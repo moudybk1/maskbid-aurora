@@ -5,8 +5,8 @@ import { Glyph } from "./FlowStory";
 const GROUPS = [
   ["Seal", ["AES-256-GCM", "RSA-OAEP-2048"], "Your browser encrypts the amount with AES-256-GCM and wraps the key with RSA-OAEP-2048, bound to one auction."],
   ["Commit", ["keccak-256"], "Every accepted bid extends one ordered keccak-256 digest, so the whole set is pinned on chain before anyone ranks it."],
-  ["Rank", ["NEAR", "OutLayer"], "After the close, Aurora reaches a NEAR adapter by cross-contract call and the solver ranks the set in an OutLayer TEE worker."],
-  ["Settle", ["Aurora", "ERC-1155", "Foundry"], "Deposits, the asset token and the final payment stay in one Aurora contract, covered by Foundry tests. Each lot is one ERC-1155 token."],
+  ["Rank", ["NEAR", "OutLayer"], "After the close, the contract on NEAR hands the complete bid set to the solver in an OutLayer TEE worker and takes its answer as the result of that call."],
+  ["Settle", ["NEAR", "NEP-141", "NEP-171"], "Deposits, the asset token and the final payment stay in one NEAR contract. Money moves as a NEP-141 token, and each lot is one token with NEP-171 views."],
 ] as const;
 
 /** Four panels; the one in focus opens, rises and shows its drawing. */

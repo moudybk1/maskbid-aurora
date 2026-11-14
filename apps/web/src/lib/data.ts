@@ -1,14 +1,16 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { zeroAddress, zeroHash, type Address, type Hex } from "viem";
-import { AUCTION_STATES, CANCEL_REASONS, DEPOSIT_STATUSES, displayPhase, type DisplayPhase } from "@maskbid/protocol";
+import type { Hex } from "viem";
+import { AUCTION_STATES, CANCEL_REASONS, DEPOSIT_STATUSES, displayPhase, initialDigest, nextDigest, type DisplayPhase } from "@maskbid/protocol";
 import {
-  auctionEvents, chainNow, fetchMetadata, readAsset, readAuction, readAuctionCount, readBid, readKeyById,
-  type AssetMetadata, type AssetStruct, type AuctionStruct, type KeyRecord,
+  chainNow, fetchMetadata, listAuctions, readAsset, readAuction, readBid, readConfig, readKeyById,
+  type Account, type AssetMetadata, type AssetStruct, type AuctionStruct, type KeyRecord,
 } from "./client";
 
-/** Poll a chain read: loading / error / data / lastSynced. Writes always re-read before acting. */
-export function useChainData<T>(fetcher: () => Promise<T>, deps: unknown[], intervalMs = 5000) {
+/** Poll a chain read: loading / error / data / lastSynced. Writes always re-read before acting.
+    Public RPC nodes are rate-limited, so nothing polls faster than every 10 s or while the tab is hidden; an action refreshes at once. */
+export function useChainData<T>(fetcher: () => Promise<T>, deps: unknown[], interval = 10_000) {
+  const intervalMs = Math.max(interval, 10_000);
   const [data, setData] = useState<T>();
   const [error, setError] = useState<string>();
   const [syncedAt, setSyncedAt] = useState<number>();
@@ -25,8 +27,8 @@ export function useChainData<T>(fetcher: () => Promise<T>, deps: unknown[], inte
   }, []);
   useEffect(() => {
     let alive = true;
-    const tick = () => { if (alive) refresh(); };
-    tick();
+    const tick = () => { if (alive && document.visibilityState === "visible") refresh(); };
+    refresh();
     const t = setInterval(tick, intervalMs);
     return () => { alive = false; clearInterval(t); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,59 +63,29 @@ export async function loadAuction(id: bigint, now?: bigint): Promise<AuctionView
   return toView(id, a, await readAsset(a.tokenId), t);
 }
 
-// How the read model spells the two enums the contract returns as numbers (schema.sql).
-const CANCEL_DB = [null, "SELLER_CANCELLED", "NO_VALID_BID", "WINNER_DEFAULT", "SOLVER_TIMEOUT"];
-const ASSET_DB = ["Pending", "Verified", "Rejected"];
-let noReadModel = false; // 501 once: this deployment has no indexer database, so stop asking
+export interface Catalog { list: AuctionView[]; source: "chain" }
 
-/** The catalog from the indexer's read model, shaped exactly like the contract structs. Undefined when it is absent, behind or failing. */
-async function loadIndexed(): Promise<AuctionView[] | undefined> {
-  if (noReadModel) return undefined;
-  const res = await fetch("/api/index/auctions", { cache: "no-store" });
-  if (res.status === 501) noReadModel = true;
-  if (!res.ok) return undefined;
-  const j = (await res.json()) as { now: string; auctions: Record<string, string & number & boolean>[] };
-  const n = BigInt;
-  return Promise.all(j.auctions.map((r) => toView(n(r.id), {
-    tokenId: n(r.tokenId), seller: r.seller as Address, reserveUnits: n(r.reserveUnits), depositUnits: n(r.depositUnits), startTime: n(r.startTime), endTime: n(r.endTime),
-    state: AUCTION_STATES.indexOf(r.state as never), keyId: r.keyId as Hex, solverCodeHash: r.solverCodeHash as Hex, configHash: r.configHash as Hex, bidCount: r.bidCount,
-    bidDigest: r.bidDigest as Hex, settlementDeadline: n(r.settlementDeadline), activeRequestId: (r.activeRequestId ?? zeroHash) as Hex, activeAttempt: r.activeAttempt,
-    attemptStartedAt: n(r.attemptStartedAt), winner: (r.winner ?? zeroAddress) as Address, winningAmountUnits: n(r.winningAmountUnits), claimDeadline: n(r.claimDeadline),
-    cancelReason: CANCEL_DB.indexOf(r.cancelReason ?? null), returnedAssetClaimed: r.returnedAssetClaimed,
-  }, {
-    issuer: r.issuer as Address, metadataURI: r.metadataURI, metadataHash: r.metadataHash as Hex, status: ASSET_DB.indexOf(r.status), reviewer: (r.reviewer ?? zeroAddress) as Address,
-    reviewDigest: (r.reviewDigest ?? zeroHash) as Hex, minted: r.minted, redeemed: r.redeemed,
-  }, n(j.now))));
-}
-
-export interface Catalog { list: AuctionView[]; source: "indexer" | "chain" }
-
-/** Lots for the landing page: one request to the read model when the indexer is healthy, otherwise straight from the chain.
-    ponytail: the read model serves the newest 100 lots in one page; follow `nextBefore` when a deployment outgrows that. */
+/** Lots for the landing page, straight from the contract: one view for the whole catalogue. */
 export async function loadAuctions(): Promise<Catalog> {
-  const indexed = await loadIndexed().catch(() => undefined);
-  if (indexed) return { list: indexed, source: "indexer" };
-  const [count, now] = await Promise.all([readAuctionCount(), chainNow()]);
-  const ids = Array.from({ length: Number(count) }, (_, i) => BigInt(i + 1));
-  return { list: await Promise.all(ids.map((id) => loadAuction(id, now))), source: "chain" };
+  const [lots, now] = await Promise.all([listAuctions(), chainNow()]);
+  return { list: await Promise.all(lots.map(({ id, a, asset }) => toView(id, a, asset, now))), source: "chain" };
 }
 
 export interface BidRow {
-  index: number; bidder: Address; commitment: Hex; txHash: Hex; depositStatus: (typeof DEPOSIT_STATUSES)[number]; newDigest: Hex; envelope: Hex;
+  index: number; bidder: Account; bidderAddress: Hex; commitment: Hex; depositStatus: (typeof DEPOSIT_STATUSES)[number]; envelope: Hex;
+  /** The ordered digest after this bid, recomputed in this browser from the stored commitments. */
+  digestAfter: Hex;
 }
 
+/** The bid set as the contract stores it. The digest chain is rebuilt here, so a page can compare its end with the contract's digest. */
 export async function loadBids(id: bigint): Promise<BidRow[]> {
-  const logs = await auctionEvents("BidPlaced", { auctionId: id });
-  const rows = await Promise.all(
-    logs.map(async (l) => {
-      const b = await readBid(id, BigInt(l.args.bidIndex as number));
-      return {
-        index: Number(l.args.bidIndex), bidder: l.args.bidder as Address, commitment: l.args.commitment as Hex, txHash: l.transactionHash as Hex,
-        depositStatus: DEPOSIT_STATUSES[b.depositStatus], newDigest: l.args.newDigest as Hex, envelope: l.args.envelope as Hex,
-      };
-    }),
-  );
-  return rows.sort((x, y) => x.index - y.index);
+  const [a, cfg] = await Promise.all([readAuction(id), readConfig()]);
+  const bids = await Promise.all(Array.from({ length: a.bidCount }, (_, i) => readBid(id, BigInt(i))));
+  let digest = initialDigest({ chainId: cfg.chainId, auctionContract: cfg.contractAddress, auctionId: id }, a.keyId);
+  return bids.map((b, index) => {
+    digest = nextDigest(digest, BigInt(index), b.bidderAddress, b.commitment);
+    return { index, bidder: b.bidder, bidderAddress: b.bidderAddress, commitment: b.commitment, depositStatus: DEPOSIT_STATUSES[b.depositStatus], envelope: b.envelope, digestAfter: digest };
+  });
 }
 
-export const loadKey = (keyId: Hex): Promise<KeyRecord> => readKeyById(keyId);
+export const loadKey = (keyId: Hex): Promise<KeyRecord | undefined> => readKeyById(keyId);

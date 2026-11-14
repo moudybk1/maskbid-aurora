@@ -1,120 +1,88 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { createWalletClient, custom, http, type Address, type EIP1193Provider, type WalletClient } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { chain, CHAIN_ID, IS_LOCAL, RPC_URL } from "./config";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import type { NearConnector } from "@hot-labs/near-connect";
+import { keyAccount, signerFromKey, walletAccount, type Account, type ConnectedWallet } from "./near";
 
-declare global {
-  interface Window {
-    ethereum?: EIP1193Provider;
-  }
-}
-
-/** Anvil default accounts. Shown only on chain 31337 so three bidders can be driven from one browser. */
-export const DEV_ACCOUNTS: { label: string; key: `0x${string}` }[] = [
-  { label: "#0 seller / admin / registrar", key: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" },
-  { label: "#1 bidder A", key: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d" },
-  { label: "#2 bidder B", key: "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a" },
-  { label: "#3 bidder C", key: "0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6" },
-  { label: "#4 participant", key: "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a" },
-  { label: "#5 participant", key: "0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba" },
-  { label: "#7 verifier", key: "0x4bbbf85ce3377467afe5d46f804f221813b2bb87f24d81f60f1fcdbf7cbf4356" },
-];
+/** A testnet account this server offers for the local demo (see /api/demo-accounts). */
+export interface DemoAccount { accountId: string; key: string; label: string }
 
 export interface Wallet {
-  address?: Address;
-  chainId?: number;
-  wrongChain: boolean;
-  kind?: "injected" | "dev";
+  /** The connected NEAR account id. */
+  address?: string;
+  /** Sends transactions for `address`. */
+  client?: Account;
+  kind?: "wallet" | "demo";
   label?: string;
-  client?: WalletClient;
-  hasInjected: boolean;
-  connectInjected: () => Promise<void>;
-  connectDev: (key: `0x${string}`) => void;
+  demoAccounts: DemoAccount[];
+  /** Opens the wallet picker (NEAR Connect: HOT, Meteor, Intear, MyNearWallet, …). Resolves once an account is connected. */
+  connectWallet: () => Promise<void>;
+  /** Local demo only: acts for one of this machine's keychain accounts. */
+  useDemo: (a: DemoAccount) => void;
   disconnect: () => void;
-  switchChain: () => Promise<void>;
   /** The connect dialog is app-wide so any "connect" prompt can open it. */
   connectOpen: boolean;
   setConnectOpen: (open: boolean) => void;
 }
 
 const Ctx = createContext<Wallet | undefined>(undefined);
-const STORAGE = "maskbid.wallet";
+const DEMO_KEY = "maskbid.near.demo";
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const [address, setAddress] = useState<Address>();
-  const [chainId, setChainId] = useState<number>();
-  const [kind, setKind] = useState<"injected" | "dev">();
-  const [client, setClient] = useState<WalletClient>();
-  const [hasInjected, setHasInjected] = useState(false);
+  const [client, setClient] = useState<Account>();
+  const [kind, setKind] = useState<"wallet" | "demo">();
+  const [label, setLabel] = useState<string>();
+  const [demoAccounts, setDemoAccounts] = useState<DemoAccount[]>([]);
   const [connectOpen, setConnectOpen] = useState(false);
+  const connector = useRef<Promise<NearConnector> | undefined>(undefined);
 
-  const connectDev = useCallback((key: `0x${string}`) => {
-    if (!IS_LOCAL) return;
-    const account = privateKeyToAccount(key);
-    setClient(createWalletClient({ account, chain, transport: http(RPC_URL) }));
-    setAddress(account.address);
-    setChainId(CHAIN_ID);
-    setKind("dev");
-    try { localStorage.setItem(STORAGE, JSON.stringify({ kind: "dev", key })); } catch {}
-  }, []);
+  // The connector touches window and IndexedDB, so it is made in the browser only, once.
+  const getConnector = useCallback(() => (connector.current ??= import("@hot-labs/near-connect").then(({ NearConnector }) => {
+    const c = new NearConnector({ network: "testnet", features: { testnet: true, signAndSendTransaction: true } });
+    c.on("wallet:signIn", (t) => {
+      const accountId = t.accounts[0]?.accountId;
+      if (!accountId) return;
+      try { localStorage.removeItem(DEMO_KEY); } catch {}
+      setClient(walletAccount(accountId, t.wallet as unknown as ConnectedWallet)); setKind("wallet"); setLabel(undefined);
+    });
+    c.on("wallet:signOut", () => { setClient((cur) => (cur && kindRef.current === "wallet" ? undefined : cur)); });
+    return c;
+  })), []);
+  const kindRef = useRef(kind);
+  kindRef.current = kind;
 
-  const connectInjected = useCallback(async () => {
-    const eth = window.ethereum;
-    if (!eth) return;
-    const wc = createWalletClient({ chain, transport: custom(eth) });
-    const [addr] = await wc.requestAddresses();
-    const id = await wc.getChainId();
-    setClient(createWalletClient({ account: addr, chain, transport: custom(eth) }));
-    setAddress(addr);
-    setChainId(id);
-    setKind("injected");
-    try { localStorage.setItem(STORAGE, JSON.stringify({ kind: "injected" })); } catch {}
+  const connectWallet = useCallback(async () => {
+    await (await getConnector()).connect();
+  }, [getConnector]);
+
+  const useDemo = useCallback((a: DemoAccount) => {
+    setClient(keyAccount(signerFromKey(a.accountId, a.key))); setKind("demo"); setLabel(a.label);
+    try { localStorage.setItem(DEMO_KEY, JSON.stringify(a)); } catch {}
   }, []);
 
   const disconnect = useCallback(() => {
-    setClient(undefined); setAddress(undefined); setChainId(undefined); setKind(undefined);
-    try { localStorage.removeItem(STORAGE); } catch {}
-  }, []);
-
-  const switchChain = useCallback(async () => {
-    if (!client || kind !== "injected") return;
-    try {
-      await client.switchChain({ id: CHAIN_ID });
-    } catch {
-      await client.addChain({ chain });
-    }
-    setChainId(await client.getChainId());
-  }, [client, kind]);
+    if (kindRef.current === "wallet") getConnector().then((c) => c.disconnect()).catch(() => {});
+    setClient(undefined); setKind(undefined); setLabel(undefined);
+    try { localStorage.removeItem(DEMO_KEY); } catch {}
+  }, [getConnector]);
 
   useEffect(() => {
-    setHasInjected(Boolean(window.ethereum));
-    let saved: { kind?: string; key?: `0x${string}` } = {};
-    try { saved = JSON.parse(localStorage.getItem(STORAGE) ?? "{}"); } catch {}
-    if (saved.kind === "dev" && saved.key) connectDev(saved.key);
-    else if (saved.kind === "injected" && window.ethereum) connectInjected().catch(() => {});
-  }, [connectDev, connectInjected]);
-
-  useEffect(() => {
-    const eth = window.ethereum;
-    if (!eth || kind !== "injected") return;
-    // account change ends the previous session's private UI state
-    const onAccounts = (accounts: unknown) => {
-      const list = accounts as Address[];
-      if (!list.length) disconnect();
-      else { setAddress(list[0]); setClient(createWalletClient({ account: list[0], chain, transport: custom(eth) })); }
-    };
-    const onChain = (id: unknown) => setChainId(Number(id));
-    eth.on("accountsChanged", onAccounts);
-    eth.on("chainChanged", onChain);
-    return () => { eth.removeListener("accountsChanged", onAccounts); eth.removeListener("chainChanged", onChain); };
-  }, [kind, disconnect]);
+    let demo: DemoAccount | null = null;
+    try { demo = JSON.parse(localStorage.getItem(DEMO_KEY) ?? "null"); } catch {}
+    fetch("/api/demo-accounts").then((r) => r.json()).then((j: { accounts?: DemoAccount[] }) => {
+      const list = j.accounts ?? [];
+      setDemoAccounts(list);
+      const saved = demo && list.find((a) => a.accountId === demo!.accountId); // only while this server still offers it
+      if (saved) useDemo(saved);
+    }).catch(() => {});
+    // Restore a wallet session from an earlier visit.
+    getConnector().then((c) => c.getConnectedWallet()).then(({ wallet, accounts }) => {
+      if (accounts[0] && !demo) { setClient(walletAccount(accounts[0].accountId, wallet as unknown as ConnectedWallet)); setKind("wallet"); }
+    }).catch(() => {});
+  }, [getConnector, useDemo]);
 
   const value = useMemo<Wallet>(() => ({
-    address, chainId, kind, client, hasInjected, connectInjected, connectDev, disconnect, switchChain, connectOpen, setConnectOpen,
-    wrongChain: chainId !== undefined && chainId !== CHAIN_ID,
-    label: kind === "dev" ? DEV_ACCOUNTS.find((a) => privateKeyToAccount(a.key).address === address)?.label : undefined,
-  }), [address, chainId, kind, client, hasInjected, connectInjected, connectDev, disconnect, switchChain, connectOpen]);
+    address: client?.accountId, client, kind, label, demoAccounts, connectWallet, useDemo, disconnect, connectOpen, setConnectOpen,
+  }), [client, kind, label, demoAccounts, connectWallet, useDemo, disconnect, connectOpen]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

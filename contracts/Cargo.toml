@@ -1,0 +1,12 @@
+# NEAR-native MaskBid contracts. `./build.sh` builds the wasm, `cargo test` runs the unit tests.
+[workspace]
+members = ["maskbid", "mock-usdc"]
+resolver = "2"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true

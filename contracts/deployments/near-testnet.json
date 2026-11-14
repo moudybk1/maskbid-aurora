@@ -1,0 +1,41 @@
+{
+  "network": "testnet",
+  "chainId": 398,
+  "maskbid": "maskbid-v2.testnet",
+  "maskbidAddress": "0xaba28f2af760061ff0253762ba6824a47fa62c01",
+  "token": "maskbid-usdc.testnet",
+  "admin": "maskbid-keeper.testnet",
+  "registrar": "maskbid-keeper.testnet",
+  "verifier": "maskbid-keeper.testnet",
+  "outlayer": "outlayer.testnet",
+  "solverCodeHash": "0x785b05898729ec13fe1788c6ca85d07ae084757d15b30ffe51ccaf78cf8f79d4",
+  "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/785b05898729ec13fe1788c6ca85d07ae084757d15b30ffe51ccaf78cf8f79d4.wasm",
+  "configHash": "0x5ecef32a311e5ec83d4e3b348b3392946f4ba848466175a4e9c3261d8f644323",
+  "profile": "demo",
+  "maxAttempts": 8,
+  "allowSimulator": true,
+  "executionDeposit": "100000000000000000000000",
+  "wasmSha256": {
+    "maskbid": "ca99a0957bc7cf2f6403f3c3855f7fd5934d4ce6b68001d5660babcaaf890cbf",
+    "mock_usdc": "83364d1796addf3b798cf120f857afad6c6a027e839991026f859e0f0f616f08"
+  },
+  "deployTx": {
+    "maskbid": "F6Srn6uz33WHo6MMqHN3kuicSmPa7HBkYjwEircXHMQ5",
+    "registerOnToken": "FcxJbXnYLi5BP7SxZ4Uum2D16b3h63ehZ1ebLvZcU213"
+  },
+  "deployedAt": "2026-11-14T20:40Z",
+  "previous": {
+    "note": "v1 on maskbid.testnet: 3 settlement attempts, registrar-only verification; auctions 1-4 settled or recovered there",
+    "maskbid": "maskbid.testnet",
+    "solverCodeHash": "0xdfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12",
+    "configHash": "0x64ff8ff8cb6947c428ce4781a1e480f03a85be53780a54168798ad49df247db4",
+    "deployTx": {
+      "maskbid": "B43F2kgDp1noPsG7H9hfWCxB2ohRCEDaPeWtpnoZGpzZ",
+      "token": "Cf6K4WYPdEvGbmtLHXSTCQ5rKQ47tDNLfunzGb2RFNUU",
+      "maskbidUpgrade": [
+        "DDWiuZyt4UzR2rm3ff5NyJArJQqru2vUfJc6UpxNrZrb",
+        "C7XgLLPftLZhXFknN5psbQEdgSry8EwjLgMr3MP6ivdH"
+      ]
+    }
+  }
+}

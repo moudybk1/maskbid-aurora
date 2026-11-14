@@ -1,14 +1,13 @@
-# MaskBid Aurora
+# MaskBid
 
-Sealed-bid auctions for one verified asset token: bidders lock a fixed deposit and submit an encrypted bid in one
-transaction, every accepted bid is committed to an ordered on-chain digest, a solver ranks the complete set privately,
-and payment, token delivery, refunds and default penalties settle on the auction contract.
+Sealed-bid auctions for one verified asset token, on NEAR: bidders lock a fixed deposit and submit an encrypted bid in
+one transaction, every accepted bid is committed to an ordered on-chain digest, a solver ranks the complete set
+privately inside a TEE, and payment, token delivery, refunds and default penalties settle in the same contract.
 
-Built from the MaskBid Aurora blueprint (a written spec kept outside this repository; its protocol vectors are in
-`packages/protocol/vectors/`). Contracts, protocol codec
-and the web app implement the spec. Settlement has two paths: the **private path** (Aurora XCC → NEAR adapter → OutLayer
-TEE solver → Aurora callback, see "Aurora testnet") and a **clearly labelled local-only fallback adapter** for Anvil
-(`apps/solver`, not a TEE).
+Everything on chain is one NEAR contract (`maskbid-v2.testnet`) plus a NEP-141 payment token. The contract calls the
+solver on OutLayer itself and takes the answer as the result of that call, so there is no bridge, adapter account or
+relayer between a request and its result. The project started on Aurora (Solidity + a NEAR adapter); that build is
+kept below under "Legacy: the Aurora build" until its last pieces are removed.
 
 Track: **Privacy & Private AI**. Built at NEAR HACKATHON.
 
@@ -17,8 +16,8 @@ Track: **Privacy & Private AI**. Built at NEAR HACKATHON.
 On a public chain every bid is visible the moment it is sent, so late bidders copy or outbid by one unit and honest
 bidders shade their price. Commit-reveal hides the amount but needs a second transaction from every bidder and lets a
 loser refuse to reveal; a trusted operator hides it but can read or drop bids. MaskBid keeps one transaction per
-bidder, commits the complete bid set on Aurora, and ranks it inside a TEE reached through NEAR, so only the winning
-amount ever becomes public and the contract accepts a result only for that exact set.
+bidder, commits the complete bid set in a NEAR contract, and has that contract call a TEE to rank it, so only the
+winning amount ever becomes public and the contract accepts a result only for that exact set.
 
 | Landing | Evidence for a settled lot |
 | --- | --- |
@@ -26,11 +25,153 @@ amount ever becomes public and the contract accepts a result only for that exact
 
 More in `release/screenshots/`.
 
-## Layout
+## Contracts on NEAR
+
+`contracts/` holds a Cargo workspace (Rust, near-sdk). **Status: deployed on NEAR testnet; full auctions have settled
+there with the real OutLayer TEE, and the web app (`apps/web`) reads and writes that deployment. No keeper or indexer
+is needed: the contract builds the solver's input itself and every page reads contract views.**
+
+- `maskbid` is one contract: participant registry, asset ledger (one unit per token id, NEP-171 views, `nft_transfer`
+  and events), auctions, and the OutLayer calls the adapter used to make. A cross-contract read on NEAR is
+  asynchronous, so one state keeps eligibility, asset and escrow checks atomic. The contract calls OutLayer itself and
+  takes the solver output as the promise result of that call, so there is no callback sender to pin.
+- `mock-usdc` is a NEP-141 test token with a faucet (near-contract-standards).
+- Protocol v1 does not change. A NEAR account takes the 20-byte address slot as the last 20 bytes of
+  `keccak256(account id)` (`address_of` view); the chain id is the deployment's domain number (398 on NEAR testnet).
+  `@maskbid/protocol` and the solver's hashing, envelope and ranking code are used as they are. The solver source is
+  pinned to `maskbid-v2.testnet` as its only caller (`PINNED_CALLER` and `manifest.json`), which gives the code hash
+  `0x785b0589...79d4`. Earlier deployments keep the builds they were made with (v1 on `maskbid.testnet`:
+  `0xdfb1e427...cd12`; Aurora: `0xccca50e5...1ae8`).
+- Bid envelopes are kept in contract state and the contract assembles the solver manifest itself, so nobody submits a
+  manifest and no log indexer is needed for settlement.
+- Each OutLayer run is paid by the caller: attach `executionDeposit` (see `get_config`, 0.1 NEAR on testnet) to
+  `prepare_auction_key`, `redispatch_key`, `request_settlement` and `retry_settlement`. The caller is OutLayer's
+  payer, so the unused part comes straight back: a run costs about 0.0012 NEAR, a timed-out one 0.001.
+
+| Aurora (Solidity) | NEAR (`maskbid`) |
+| --- | --- |
+| `prepareAuctionKey` + adapter `request_key` + `onKeyPrepared` | `prepare_auction_key`, result in `get_key` |
+| `createAuction` (ERC-1155 escrow transfer) | `create_auction` (the unit moves to escrow inside the contract) |
+| `placeBid` (`transferFrom` the deposit) | `ft_transfer_call` of the deposit to `maskbid`, msg `{"action":"bid","auction_id":1,"envelope":"0x.."}` |
+| `requestSettlement` + keeper `submit_manifest` + `onSettlementResult` | `request_settlement` |
+| `claimWin` (`transferFrom` the remainder) | `ft_transfer_call` of the remainder, msg `{"action":"claim","auction_id":1}` (`claim_win` when nothing is left to pay) |
+| `claimRefund`, `expireClaim`, `cancelAuction`, `cancelAfterSolverTimeout`, `claimReturnedAsset` | same names in snake_case; payouts go to the caller |
+| `withdrawSellerCredit` | `withdraw_credit` (also holds any payout whose token transfer failed) |
+
+```bash
+npm run test:near    # cargo test: 9 tests, the settlement ones run the real solver library on the contract's SOLVE input
+npm run build:near   # contracts/dist/maskbid.wasm and mock_usdc.wasm
+```
+
+Needs Rust with the `wasm32-unknown-unknown` target.
+
+### NEAR testnet deployment
+
+| What | Account / value |
+| --- | --- |
+| MaskBid contract | `maskbid-v2.testnet` (protocol address `0xaba28f2af760061ff0253762ba6824a47fa62c01`, chain id 398) |
+| Payment token (mUSDC, 6 decimals, `faucet`) | `maskbid-usdc.testnet` |
+| Admin, registrar, verifier | `maskbid-keeper.testnet` |
+| Solver (OutLayer `outlayer.testnet`) | `0x785b05898729ec13fe1788c6ca85d07ae084757d15b30ffe51ccaf78cf8f79d4` |
+| Config hash | `0x5ecef32a311e5ec83d4e3b348b3392946f4ba848466175a4e9c3261d8f644323` |
+| Settlement attempts per auction | 8 (a failed TEE run can be retried at once) |
+| Participant verification | self-service with simulator assurance (`register_simulated`), or the registrar |
+
+v2 replaced `maskbid.testnet` (v1) on 2026-11-14: v1 allowed three settlement attempts and only registrar
+verification. Both values are part of the config hash, so v2 is a fresh deployment; v1 stays on chain with its four
+auctions (all settled or recovered).
+
+Full record: `contracts/deployments/near-testnet.json`. `npm run near:testnet` runs one complete auction against it
+(about ten minutes) and appends the result, with transaction ids, to `release/near-testnet-run.json`: the seller's key is made and sealed in
+the TEE, two bidders seal bids in the client and lock deposits with `ft_transfer_call`, a bid with the wrong deposit
+is refunded by the token, the TEE ranks the bids from the manifest the contract built, the winner pays the remainder
+and receives the unit, the loser is refunded, and a payout to a seller who cannot hold the token yet becomes a credit
+that is withdrawn later. The contract ends with no locked deposits, no credits and no tokens.
+
+OutLayer on testnet was unreliable during these runs: its two-minute yield timed out (`null` output) on two of the
+first three key requests, which `redispatch_key` recovered, and on all three settlement attempts of v1's auction 2,
+which left that auction to the solver-timeout exit (hence eight attempts in v2). The first full run on v2 needed them:
+OutLayer timed out on settlement attempts 1 to 4 and the fifth produced the result, which the contract accepted. `node scripts/near-testnet.mjs recover <id>` drives that exit once the
+settlement deadline has passed: anyone cancels, bidders take their deposits back, the seller takes the unit back.
+
+Not run on testnet: the no-sale and winner-default paths (unit-tested only), and a 32-bid auction.
+
+The same flow was also driven through the web app against v1: register an asset, approve it as the verifier, request
+the key (the first TEE run timed out, the retry button recovered it), publish the auction, place two sealed bids from
+two accounts (each checked against the commitment the contract stored), request settlement, and pay and claim as the
+winner. On v2 a wallet session through NEAR Connect (the NEAR CLI wallet) registered itself as a participant.
+
+## Try it
+
+Requirements: Node 22+ and npm. Rust with the `wasm32-unknown-unknown` target only if you want to build or test the
+contracts.
+
+```bash
+npm install
+npm run web          # http://localhost:3000, reading and writing the NEAR testnet deployment
+```
+
+The web app needs no configuration: it reads `maskbid-v2.testnet` through public RPC nodes, and you act through your
+own NEAR wallet. **Connect account** opens [NEAR Connect](https://github.com/hot-dao/near-selector), which lists the
+wallets that support testnet (Meteor, Intear, Nightly, Ledger, NEAR CLI and others); switch your wallet to testnet
+first. The wallet signs every transaction; the app never sees a key. Then:
+
+1. **Verify** (`/verify`): on this demo deployment your account registers itself with simulator assurance in one
+   transaction. That gives one bid per account, not per person, and every page says "Simulated".
+2. **Gas**: about half a NEAR from the [testnet faucet](https://near-faucet.io/). Starting a TEE run (a seller's key,
+   a settlement request) attaches 0.1 NEAR, of which all but about 0.0012 comes straight back.
+3. **mUSDC**: the button on any lot or in My activity mints 1,000 test mUSDC.
+4. **Sell**: register an asset, then ask the operator to approve it (the verifier role is `maskbid-keeper.testnet`),
+   or run your own deployment to play that role. **Bid**: open a live lot, type an amount, sign one transfer.
+
+For a local demo that plays every role from one browser, `npm run web:near` (port 3001, profile `.env.web-near`)
+offers the accounts named in `NEAR_DEMO_ACCOUNTS` in the connect dialog, signing with their keys from this machine's
+near-cli keychain. That route answers on localhost only; never set it on a public deployment.
+
+Your own deployment, with [near-cli-rs](https://github.com/near/near-cli-rs) and three testnet accounts (contract,
+token, operator):
+
+```bash
+npm run build:near                       # contracts/dist/maskbid.wasm, mock_usdc.wasm
+# 1. set PINNED_CALLER in apps/private-solver/src/main.rs and "callers" in manifest.json to your contract account
+apps/private-solver/build.sh             # prints SOLVER_CODE_HASH
+scripts/fastfs-upload.py apps/private-solver/dist/maskbid-private-solver.wasm <operator>.testnet   # prints the wasm url
+# 2. deploy the token with init `new {}` and the contract with init `new { admin, registrar, verifier, token,
+#    outlayer: "outlayer.testnet", wasm_url, wasm_hash, chain_id: 398, profile: "demo", allow_simulator: true,
+#    execution_deposit: "100000000000000000000000" }`, then `storage_deposit` the contract account on the token
+npm run near:testnet                     # one full auction against the deployment in scripts/near-testnet.mjs
+```
+
+## What is not here (honest limits)
+
+- **Simulated proof of personhood only.** World ID is not wired in. On this demo deployment an account registers
+  itself, so the limit is one bid per account, not per person; the registrar path for a real provider is in the
+  contract but has no provider behind it.
+- **Asset review is centralised.** One verifier account approves assets; on the shared deployment that is the operator.
+- **TEE attestation is not verified** by the contract or the web app. The contract pins the solver's code hash and
+  OutLayer refuses other bytes, but nothing here checks a TDX quote.
+- **OutLayer testnet is unreliable.** Key and settlement runs time out often; the contract records the failure, lets
+  anyone retry, and frees deposits and the asset at the settlement deadline if no result arrives (eight settlement
+  attempts per auction, each retried by a click).
+- **Not audited.** The contracts have unit tests and testnet runs, not a review. The no-sale and winner-default paths
+  ran in unit tests only.
+- **Storage is paid from the contract's own NEAR balance**, gated by the participant registry rather than by per-call
+  storage deposits.
+- **Read model:** pages read contract views and poll public RPC nodes, which rate-limit; there is no indexer.
+
+## Legacy: the Aurora build
+
+Everything below describes the first build of MaskBid (Solidity on Aurora, a NEAR adapter contract, a keeper and a
+PostgreSQL indexer). Those sources are still in the tree (`contracts/src`, `apps/near-adapter`, `apps/keeper`,
+`apps/indexer`, `apps/solver`, the EVM scripts) and its testnet evidence is in `release/`, but **the web app no longer
+talks to it** and `apps/private-solver` is now pinned to `maskbid-v2.testnet`.
+
+### Layout
 
 | Path | What |
 | --- | --- |
 | `contracts/` | Foundry. `ParticipantRegistry`, `MaskBidAsset` (ERC-1155, one unit per id), `MaskBidAuction`, `MockUSDC`, `Protocol` hashing library. 31 tests: golden auction accounting, winner default, no-sale, solver timeout, retry/stale/duplicate callbacks, XCC dispatch, bid rules, entry pause, key binding, asset roles, Solidity-side protocol vectors. |
+| `contracts/maskbid/`, `contracts/mock-usdc/` | **NEAR-native rewrite (Rust, near-sdk), no Aurora.** See "Contracts on NEAR" above. Deployed on NEAR testnet as `maskbid-v2.testnet` and `maskbid-usdc.testnet`. |
 | `packages/protocol/` | TypeScript protocol v1: amount grammar (bigint only), keccak domain hashes, 201-byte plaintext, 490-byte AES-GCM + RSA-OAEP envelope, manifest validation, deterministic ranking. Tested against `vectors/protocol-vectors.json`; the same vectors are checked in Solidity (`contracts/test/Protocol.t.sol`). |
 | `packages/contracts/` | Generated ABIs + deployment manifest (`npm run sync`), chain helpers. |
 | `apps/private-solver/` | Rust `wasm32-wasip2` OutLayer guest: `INIT_KEY` (RSA-OAEP-2048 keygen, seed sealed with the host key `auction_keys` bound to this exact build + the adapter as predecessor), `SOLVE` (manifest steps 1-8, decrypt, rank, canonical result), `UNSEAL_PROBE` (G-02 negatives). Reproduces `protocol-vectors.json` byte for byte (`cargo test`). `build.sh` prints the SHA-256 that is `SOLVER_CODE_HASH`. |
@@ -42,7 +183,7 @@ More in `release/screenshots/`.
 | `apps/web/` | Next.js 16 app: catalog (from the read model when the indexer runs), auction detail with sealed-bid dialog (browser-side encryption), evidence page, seller flow (register → review → key → publish), verifier queue, activity, simulated verification, config page. |
 | `scripts/` | `deploy-local.mjs`, `sync-abi.mjs`, `solver-hash.mjs` (local-mock code identity), `e2e.mjs` (golden auction end to end), `fastfs-upload.py` (publish a wasm to FastFS), `testnet-gates.mjs` (Aurora testnet gate run: `golden`, `negatives`, `stale`, `recovery`; `seed` lists the demo lots), `bench.mjs` (solver p50/p95 for 1/3/32 bids), `latency.mjs` (key and settlement latency from testnet logs). |
 
-## Try it from a fresh clone
+### Try it from a fresh clone
 
 Requirements: Node 22+, npm, git, and [Foundry](https://getfoundry.sh) (`forge`, `anvil`) on PATH. The Solidity
 libraries are npm packages, so there is no `forge install` step.
@@ -87,7 +228,7 @@ Demo walkthrough: connect `#0` → Sell → Register asset → connect `#7` → 
 Create auction (Prepare key, terms, publish) → connect `#1`/`#2`/`#3` → Place sealed bid (150 / 120 / 135) → wait for
 close → adapter settles → winner pays remainder, losers withdraw, evidence page shows digest/request/output hashes.
 
-## Demo
+### Demo
 
 The app runs as a demo for now. Before anything else it shows one card with two choices: **Demo**, the deployment this
 build points at (Aurora testnet with `npm run demo`, the local chain with `npm run web`), and **Mainnet**, shown as coming
@@ -107,7 +248,7 @@ faucet, and the identity simulator and the mUSDC faucet are in the app. Lots set
 TEE run costs the adapter account 0.1 NEAR. Seeded lots carry their metadata as a `data:` URI, so they render wherever the
 web app is hosted. Recording script: `release/DEMO.md`.
 
-## Read model (indexer)
+### Read model (indexer)
 
 ```bash
 npm run indexer:setup    # once: database `maskbid`, reference schema, an indexer login and a read-only API login, the deployment row
@@ -133,7 +274,7 @@ Not built: block-by-block parent verification (only blocks that carry events are
 checkpoint, not below it), enrichment of settlement attempts from NEAR receipts, manifest publication, and a real reorg or
 fault-injection test. Logins have no passwords and rely on local trust authentication.
 
-## Protocol guarantees implemented
+### Protocol guarantees implemented
 
 - Bid = one transaction: deposit transfer + 490-byte envelope in `BidPlaced` + commitment + ordered digest update.
   No API stores ciphertext; the manifest is rebuilt from logs.
@@ -146,7 +287,7 @@ fault-injection test. Logins have no passwords and rely on local trust authentic
   open refunds and a separate returned-asset claim. Entry pause never blocks exits.
 - Money is `bigint`/`uint256` end to end; the UI parses `^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$`.
 
-## What is not here (honest limits)
+### What is not here (honest limits)
 
 - **The local profile is not private.** On Anvil (`nearAdapterAccount = local-mock-adapter`, `xccPrecompile = 0`) the
   auction emits events only and `apps/solver` plays adapter + TEE: keys are unsealed files in `keystore/`, evidence is
@@ -168,7 +309,7 @@ fault-injection test. Logins have no passwords and rely on local trust authentic
 - TEE attestation is recorded as `available_unchecked`: the OutLayer execution ids and output hashes are stored, but the
   Intel TDX quote is not verified by this repository (use OutLayer's `/executions` page or `outlayer-verify`).
 
-## Aurora testnet
+### Aurora testnet
 
 Private-compute path (blueprint 04 §5/§7, 15 §7/§11). Money and the asset never leave Aurora; the NEAR side only
 authenticates requests, runs the pinned solver and returns bound results.
@@ -209,7 +350,7 @@ sealed record is `0x01 || 32-byte RSA seed` (the same build regenerates the key 
 DER, because OutLayer's on-chain resume payload is 1 KiB; the AAD is exactly `keyRequestId || owner || solverCodeHash ||
 configHash`. The adapter stores the sealed blob; OutLayer storage is not used (unavailable for direct WasmUrl runs).
 
-### Gate results
+#### Gate results
 
 Run of 2026-10-23 (evidence in `release/gate-run.json`, `release/build.json`, `release/hosting-tunnel-2026-10-23.json`). Deployed and bound:
 auction `0x9802a6510D47941B139720d54bdBd61954ed5C5A`, adapter `maskbid-adapter.testnet`, router
@@ -240,14 +381,14 @@ Not claimed: the Intel TDX quote is not verified by this repository (execution i
 `available_unchecked`; check them on OutLayer's executions page). Operator privacy therefore rests on the pinned code hash,
 the sealed key and the callers gate, not on an attestation this repo has checked.
 
-### Measurements and release report
+#### Measurements and release report
 
 `release/REPORT.md` lists every gate, the requirement status (FR-01..28, NFR-01..10) and what was not done. Native solver benchmark
 (`node scripts/bench.mjs`, `release/bench.json`, 20 samples, not a TEE): SOLVE p50 1.5 / 2.6 / 24.7 ms for 1 / 3 / 32 bids, RSA-2048 key from seed p50 81 ms.
 Testnet private path (`node scripts/latency.mjs`, `release/latency.json`): key preparation p50 10 s / p95 14 s (7 samples), settlement p50 17 s / p95 38 s (6 samples).
 Demo script: `release/DEMO.md`. Screenshots: `release/screenshots/`. No demo video is recorded yet.
 
-### Deployed addresses (Aurora testnet 1313161555)
+#### Deployed addresses (Aurora testnet 1313161555)
 
 | Contract | Address |
 | --- | --- |
@@ -258,7 +399,7 @@ Demo script: `release/DEMO.md`. Screenshots: `release/screenshots/`. No demo vid
 | NEAR adapter | `maskbid-adapter.testnet` (callback sender `0x780dFA1E400790fffAeC39CF89c4c8182843570C`) |
 | Solver code hash | `0xccca50e5634049e41ff08054fbb2c65e34b6165906b17d9e7f4955b775a21ae8` |
 
-### Source and contribution
+#### Source and contribution
 
 Upstream design and UI concepts: [UyLeQuoc/MaskBid](https://github.com/UyLeQuoc/MaskBid) (commit `a3dd70ce`, MIT). Written here: the Aurora contracts,
 the protocol codec and cross-language vectors, the OutLayer TEE solver and NEAR adapter, the keeper, the indexer and the web app. Track: Privacy.
@@ -266,7 +407,7 @@ the protocol codec and cross-language vectors, the OutLayer TEE solver and NEAR 
 Work in this repository started on 2026-10-23 (the hackathon counts code from its 2026-10-19 announcement onward); the upstream project
 above is the pre-existing baseline. It was first committed on 2026-11-12, which is why the earlier gate evidence carries dates and transaction hashes instead of commit hashes.
 
-### Libraries
+#### Libraries
 
 - Solidity: OpenZeppelin Contracts 5.2.0, forge-std 1.15.0, built and tested with Foundry.
 - TypeScript: viem, Next.js 16, React 19, node-postgres (`pg`); Node's built-in test runner and Web Crypto.
@@ -274,7 +415,7 @@ above is the pre-existing baseline. It was first committed on 2026-11-12, which 
 - NEAR adapter: `near-sdk` 5.29.
 - Services: Aurora testnet and its XCC precompile, NEAR testnet, OutLayer testnet (TEE runs), FastFS (wasm hosting), PostgreSQL 16.
 
-### License
+#### License
 
 MIT, see `LICENSE`.
 

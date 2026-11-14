@@ -7,7 +7,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ hash: s
   if (!/^[0-9a-f]{64}$/.test(hash)) return new Response("not found", { status: 404 });
   try {
     const bytes = readFileSync(join(process.cwd(), "data", "metadata", `${hash}.json`));
-    return new Response(bytes, { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=31536000, immutable" } });
+    return new Response(bytes, { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=31536000, immutable", "access-control-allow-origin": "*" } }); // public, content-addressed: any origin may verify it
   } catch {
     return new Response("not found", { status: 404 });
   }

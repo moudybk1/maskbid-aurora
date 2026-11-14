@@ -1,8 +1,9 @@
 "use client";
-import { CHAIN_ID, IS_LOCAL } from "@/lib/config";
+import { useState } from "react";
+import { NETWORK } from "@/lib/config";
 import { short } from "@/lib/format";
-import { DEV_ACCOUNTS, useWallet } from "@/lib/wallet";
-import { Modal } from "./ui";
+import { useWallet } from "@/lib/wallet";
+import { Alert, Modal } from "./ui";
 
 export function WalletControl() {
   const w = useWallet();
@@ -10,9 +11,8 @@ export function WalletControl() {
   if (w.address) {
     return (
       <>
-        {w.wrongChain && <button type="button" className="btn btn-sm btn-danger" onClick={w.switchChain}>Switch to chain {CHAIN_ID}</button>}
-        <span className="wallet-chip" title={`${w.address} · chain ${w.chainId}`}>{w.label && <span className="who">{w.label}</span>}{short(w.address)}</span>
-        {w.kind === "dev" && <button type="button" className="btn btn-outline btn-sm hide-sm" onClick={() => w.setConnectOpen(true)}>Switch account</button>}
+        <span className="wallet-chip" title={`${w.address} · ${NETWORK}`}>{w.label && <span className="who">{w.label}</span>}{short(w.address, 10, 8)}</span>
+        <button type="button" className="btn btn-outline btn-sm hide-sm" onClick={() => w.setConnectOpen(true)}>Switch account</button>
         <button type="button" className="btn btn-outline btn-sm" onClick={w.disconnect} aria-label="Disconnect"><span className="hide-sm">Disconnect</span><svg className="show-sm" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button>
         {w.connectOpen && <ConnectDialog onClose={close} />}
       </>
@@ -20,8 +20,8 @@ export function WalletControl() {
   }
   return (
     <>
-      <a className="btn btn-outline btn-sm hide-sm" href="/#start">Get started</a>
-      <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Connect wallet</button>
+      <a className="btn btn-outline btn-sm hide-sm" href="/auctions#start">Get started</a>
+      <button type="button" className="btn btn-sm" onClick={() => w.setConnectOpen(true)}>Connect account</button>
       {w.connectOpen && <ConnectDialog onClose={close} />}
     </>
   );
@@ -29,24 +29,31 @@ export function WalletControl() {
 
 function ConnectDialog({ onClose }: { onClose: () => void }) {
   const w = useWallet();
+  const [error, setError] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  const wallet = () => {
+    setBusy(true); setError(undefined);
+    // The picker is the wallet library's own window; ours steps aside while it is open.
+    onClose();
+    w.connectWallet().catch((e: Error) => { setError(e.message); w.setConnectOpen(true); }).finally(() => setBusy(false));
+  };
   return (
-    <Modal title={w.address ? "Switch account" : "Connect wallet"} onClose={onClose}>
-      <p className="muted">Connecting only reads your address. Nothing is sent until you sign a transaction.</p>
+    <Modal title={w.address ? "Switch account" : "Connect a NEAR testnet account"} onClose={onClose}>
+      <p className="muted">MaskBid runs on {NETWORK}. Your wallet signs every transaction; this app never sees your keys.</p>
       <div className="stack">
-        <button type="button" className="btn" disabled={!w.hasInjected} onClick={() => w.connectInjected().then(onClose).catch(() => {})}>
-          {w.hasInjected ? "Browser wallet (MetaMask or compatible)" : "No browser wallet detected"}
-        </button>
-        {IS_LOCAL && (
+        <button type="button" className="btn" disabled={busy} onClick={wallet}>Connect a NEAR wallet</button>
+        <p className="caption">HOT, Meteor, Intear, MyNearWallet and others, switched to testnet. No testnet account yet? Create one in your wallet, then get free testnet NEAR from the <a href="https://near-faucet.io/" target="_blank" rel="noreferrer">faucet</a>.</p>
+        {error && <Alert tone="error">{error}</Alert>}
+        {w.demoAccounts.length > 0 && (
           <div className="dev-accounts">
-            <p className="small"><strong>Demo accounts on the local chain</strong></p>
-            <p className="small muted">Play every role from one browser: list an asset as the seller, approve it as the verifier, then bid as A, B and C. These are public Anvil test keys; never use them anywhere else.</p>
+            <p className="small"><strong>Demo accounts on this machine</strong></p>
+            <p className="small muted">Play every role from one browser: list an asset as the seller, approve it as the verifier, then bid as A and B. Throwaway testnet accounts from this machine&apos;s near-cli keychain, offered on localhost only.</p>
             <div className="dev-grid">
-              {DEV_ACCOUNTS.map((a) => {
-                const [num, ...role] = a.label.split(" ");
-                const current = w.label === a.label;
+              {w.demoAccounts.map((a) => {
+                const current = w.address === a.accountId;
                 return (
-                  <button key={a.key} type="button" className="dev-account" aria-pressed={current} onClick={() => { w.connectDev(a.key); onClose(); }}>
-                    <b>{role.join(" ")}</b><small>Account {num}{current ? " · connected" : ""}</small>
+                  <button key={a.accountId} type="button" className="dev-account" aria-pressed={current} onClick={() => { w.useDemo(a); onClose(); }}>
+                    <b>{a.label}</b><small>{short(a.accountId, 10, 8)}{current ? " · connected" : ""}</small>
                   </button>
                 );
               })}

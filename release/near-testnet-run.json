@@ -1,0 +1,305 @@
+{
+  "runs": [
+    {
+      "contract": "maskbid.testnet",
+      "token": "maskbid-usdc.testnet",
+      "startedAt": "2026-11-14T19:22:54.326Z",
+      "txs": {
+        "note": "transaction ids were not captured in this run"
+      },
+      "chainId": 398,
+      "contractAddress": "0x34894179dfce71f441a2aae2591c68df3285cfd4",
+      "solverCodeHash": "0xdfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12",
+      "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/dfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12.wasm",
+      "configHash": "0x64ff8ff8cb6947c428ce4781a1e480f03a85be53780a54168798ad49df247db4",
+      "outlayer": "outlayer.testnet",
+      "tokenId": "1",
+      "keyRequestId": "0xde5b7cf640aafbbe26d72dbb78e5ba0a82e42fbcd338cbe043f07decf4182194",
+      "keyId": "0xbe747f57f89464c8cfa50d678e46ff66faf49041d8e8a99ba05e686a6c60ccd7",
+      "sealedBlobHash": "0x269b8ecebf3f965ad52d3c9dc568dc86ea70cc701cc42d7ec75bd55b9267d332",
+      "auctionId": 1,
+      "requestId": "0xe08fa9a9cb3c083356d2ed7196423ec6daa48a5735659e24c730be3a14ca69f5",
+      "attempts": 1,
+      "bidDigest": "0xf7c161e35c89bfc0e6578d2456e1fc2a8cc04039d5d95576a95b716130f8f975",
+      "outputSha256": "0x69d7bdc4cde38e84cc2a213e5893d682781f4347527fab2730909818dcb1af66",
+      "winner": "bob.maskbid-keeper.testnet",
+      "winningAmountUnits": "150000000",
+      "creditFallback": true,
+      "finishedAt": "2026-11-14T19:35:09.402Z"
+    },
+    {
+      "contract": "maskbid.testnet",
+      "token": "maskbid-usdc.testnet",
+      "startedAt": "2026-11-14T19:36:11.259Z",
+      "txs": {
+        "register:seller.maskbid-keeper.testnet": {
+          "tx": "BygQt6vSBiQSy255wUdJ3d1GwTASKtcCDN9nDisxNvGW",
+          "gasBurnt": "0.322 Tgas"
+        },
+        "register:alice.maskbid-keeper.testnet": {
+          "tx": "GrJRx8iMiESpm3fWN6KsnFPrDCQbTTxTkxaDrESxFVSb",
+          "gasBurnt": "0.322 Tgas"
+        },
+        "register:bob.maskbid-keeper.testnet": {
+          "tx": "2ETyYFaLomZfpHriMs79PkLYXQmJ18GWYKRzkGiwMXz2",
+          "gasBurnt": "0.321 Tgas"
+        },
+        "registerAsset": {
+          "tx": "HHu7JQABpRefSGLdzCCr1ytino9cZusvMB6vJagM9US2",
+          "gasBurnt": "0.316 Tgas"
+        },
+        "verifyAndMint": {
+          "tx": "14de63JV3t3jq4Whzjf35UtcEVvPc2bmWNT3W3a1M9rY",
+          "gasBurnt": "0.314 Tgas"
+        },
+        "prepareAuctionKey": {
+          "tx": "4o817LeBRa5ngSbWHnijUhNoJqBhEdvSNKekfGqGf5u6",
+          "gasBurnt": "0.313 Tgas"
+        },
+        "createAuction": {
+          "tx": "EMcfffPTuvsvKfGyJQ6Z69P6pnVyE1TimcZZxRLKVyM9",
+          "gasBurnt": "0.318 Tgas"
+        },
+        "bidWrongDeposit": {
+          "tx": "AnRwwFBP3n7pqscx1V3VqXSedKMDpBS9icCk8gkDXBQ5",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:alice.maskbid-keeper.testnet": {
+          "tx": "7uWa5RE93CXzmDcKT8GadVdXAmLiVY7pEtGFMw5VRNyL",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:bob.maskbid-keeper.testnet": {
+          "tx": "7PLiVMF3vKTuZmA3WSYkntaGzgYKhDS4HssKY5UKLzq9",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "requestSettlement": {
+          "tx": "DfYjFaUKVGqjZWeABCoWBNX8RhJhFvcUzUuK36rZxwP6"
+        },
+        "retrySettlement1": {
+          "tx": "4hTXQoyynZDHXTAEpSpRzr7UX7tP8NoMsH79KQjtrwjG"
+        },
+        "retrySettlement2": {
+          "tx": "HepZEF7k2vep5ZEjKf25qPsAsVpXdbqupjdwHRJm4ao3"
+        }
+      },
+      "chainId": 398,
+      "contractAddress": "0x34894179dfce71f441a2aae2591c68df3285cfd4",
+      "solverCodeHash": "0xdfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12",
+      "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/dfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12.wasm",
+      "configHash": "0x64ff8ff8cb6947c428ce4781a1e480f03a85be53780a54168798ad49df247db4",
+      "outlayer": "outlayer.testnet",
+      "tokenId": "2",
+      "keyRequestId": "0x825d7fe30ac07bfdefc48501a618ed0dc5b388d787c99c899352c20a017a7c4b",
+      "keyId": "0xa9ad2289325d04c8f7a5637c427ee4b6719fbc23e4677054642de34567020abf",
+      "sealedBlobHash": "0x1eef83f03c4d5984688a72ffabd39d0ab4d5e20f732f8d53a3b8e2a8e1d8e31b",
+      "auctionId": 2,
+      "settlementFailed": "OutLayer returned null (its yield timed out) on all three attempts",
+      "attempts": 3
+    },
+    {
+      "contract": "maskbid.testnet",
+      "token": "maskbid-usdc.testnet",
+      "startedAt": "2026-11-14T19:52:54.300Z",
+      "txs": {
+        "register:seller.maskbid-keeper.testnet": {
+          "tx": "491JrdrEybFzc2hJBUW46CB1jUwXuwpR3oe4jSEjUbRe",
+          "gasBurnt": "0.322 Tgas"
+        },
+        "register:alice.maskbid-keeper.testnet": {
+          "tx": "8fGiQVMAfMRRs9Gc4mSeAAM5DdKfiLG1nkzAKsh2oUzQ",
+          "gasBurnt": "0.322 Tgas"
+        },
+        "register:bob.maskbid-keeper.testnet": {
+          "tx": "8dn3FLKPCMDZ1papuHTkf5XUxH48ypGaZY8wHaZgc6nn",
+          "gasBurnt": "0.321 Tgas"
+        },
+        "registerAsset": {
+          "tx": "H9SDjcqworN2FzbgS8zohmhjEcBPCDHhZSR1Uinnazne",
+          "gasBurnt": "0.316 Tgas"
+        },
+        "verifyAndMint": {
+          "tx": "8GfKr8cTGWdy67BEqRzEyy4zzFdpQcyLJdtGHSEq9Muy",
+          "gasBurnt": "0.314 Tgas"
+        },
+        "prepareAuctionKey": {
+          "tx": "FoT7FHBJFsskZzQL4SnGHhgPmFsWyWonNoqL3AY3AQvW",
+          "gasBurnt": "0.313 Tgas"
+        },
+        "redispatchKey1": {
+          "tx": "DXaknBPFi3p9SYZHmBLrfX6EyGyoqujKkPU2Q7K5S3XW",
+          "gasBurnt": "0.313 Tgas"
+        },
+        "redispatchKey2": {
+          "tx": "5zGUFkADJVsjbwvh6aQkV8AVFLSBRLxnwYfRAFPYrDYy",
+          "gasBurnt": "0.313 Tgas"
+        },
+        "createAuction": {
+          "tx": "k9N9NFjkwkLD6zWSrLY8dfiyXHtSdyvYKzBFN8RkZZW",
+          "gasBurnt": "0.318 Tgas"
+        },
+        "bidWrongDeposit": {
+          "tx": "7Gc6zgyvvzMgdrbtVV8gQKwotZ9pHnd865R56DGS6LAB",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:alice.maskbid-keeper.testnet": {
+          "tx": "Amn8r2KXuAKuXs6NnARX2oSwazFx8F4RdAd9UD1JL5s6",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:bob.maskbid-keeper.testnet": {
+          "tx": "2TeDuCWgcK8LM3HhMpGQZ2KZb1dcD7Y9NQKtedM1hZ79",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "requestSettlement": {
+          "tx": "Da6p6wT7CW7A1h2SnqAtRJHkMoKGxwaMUixTpvhinaki",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "claim": {
+          "tx": "9QrpkjeVPHFM28omNQFMdQgCkEZS2rBdFDkWsKktHiYK",
+          "gasBurnt": "0.314 Tgas"
+        },
+        "claimRefund": {
+          "tx": "8YZTVqcimcTvjwSJ2WgmEoCpA2grHVMQfqMVVdZjPkEe",
+          "gasBurnt": "0.310 Tgas"
+        }
+      },
+      "chainId": 398,
+      "contractAddress": "0x34894179dfce71f441a2aae2591c68df3285cfd4",
+      "solverCodeHash": "0xdfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12",
+      "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/dfb1e42779e970ffba01f0e998c15d56991b64beb71b31303650b9502345cd12.wasm",
+      "configHash": "0x64ff8ff8cb6947c428ce4781a1e480f03a85be53780a54168798ad49df247db4",
+      "outlayer": "outlayer.testnet",
+      "tokenId": "3",
+      "keyRequestId": "0x13690b0a938f4ab8722b30c813bfe7fdf1e24816162875ce7a3f2a5bd0d91e46",
+      "keyId": "0x9546afeabf8ba757e0d1cd17baa6e359b91a7158b969f5bc62426d6b977c9c29",
+      "sealedBlobHash": "0x39b2a76487c413ab2630532cdcb559dc149577fa19a6a26c7c466cc8d5ecc5ec",
+      "auctionId": 3,
+      "requestId": "0xdb016ed48804e294fe190dffc0e85df60974beb311e30836bb901654425bfd7a",
+      "attempts": 1,
+      "bidDigest": "0x2f8fb279ec93dd37907e51cb406d95194d1c4352dc9e991c348ab74c2210f251",
+      "outputSha256": "0x8979cd5b31d05fd219d80cb52b46450e351e117f19785c7b76bfff9e6ebda3e6",
+      "winner": "bob.maskbid-keeper.testnet",
+      "winningAmountUnits": "150000000",
+      "finishedAt": "2026-11-14T20:05:20.867Z"
+    },
+    {
+      "contract": "maskbid.testnet",
+      "token": "maskbid-usdc.testnet",
+      "startedAt": "2026-11-14T20:05:21.115Z",
+      "txs": {
+        "cancelAfterSolverTimeout": {
+          "tx": "GpZJBdFDFJWw1i838Bttps3qwCcAuq6tLXQJ5PovkjMn",
+          "gasBurnt": "0.311 Tgas"
+        },
+        "refund:alice.maskbid-keeper.testnet": {
+          "tx": "AXhSY8KBNNgB3ddg77DcfigrxsKAhsXX18h6yF6zKChE",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "refund:bob.maskbid-keeper.testnet": {
+          "tx": "FwiLmwcxrrfvreG9MTo5hBqUL2owDR9yALdQWUqs8sBQ",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "claimReturnedAsset": {
+          "tx": "3TMmuSmuH69N6tyWH6uAjAFN4xMH8LvR39MmW4cDKGUG",
+          "gasBurnt": "0.310 Tgas"
+        }
+      },
+      "recoveredAuctionId": 2,
+      "cancelReason": "SolverTimeout",
+      "lastError": "protocolVersion missing",
+      "finishedAt": "2026-11-14T20:11:59.181Z"
+    },
+    {
+      "contract": "maskbid-v2.testnet",
+      "token": "maskbid-usdc.testnet",
+      "startedAt": "2026-11-14T20:35:49.446Z",
+      "txs": {
+        "register:seller.maskbid-keeper.testnet": {
+          "tx": "277ESuqerLCzkm9vHiVTPtnvJs1yJde6mdHm12UvHEmq",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "register:alice.maskbid-keeper.testnet": {
+          "tx": "396wSj2kQPX8JKC4H39zq4VpxFNDmGU46EhpKJpXr9hT",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "register:bob.maskbid-keeper.testnet": {
+          "tx": "AbYJbvErwHUtsTENNFcruMeibfEzzuumBbEVGBcqfz46",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "registerAsset": {
+          "tx": "93jnnkCdvQNxy6yjWN5qohuHRiGgxtfGcC6HtmAiLG4n",
+          "gasBurnt": "0.316 Tgas"
+        },
+        "verifyAndMint": {
+          "tx": "281F2Cr3D1mT9pGMnpKyHNdFQXp85UU2NHu1suEbiFTf",
+          "gasBurnt": "0.314 Tgas"
+        },
+        "prepareAuctionKey": {
+          "tx": "52Fu2RqfPhyaFV1TbGdCPnDwRGKBB5jX7jkfHtm6ZVmx",
+          "gasBurnt": "0.313 Tgas"
+        },
+        "createAuction": {
+          "tx": "FaYEPttvFW7ds2zCQn1vXKu6SqLoHjNeCnFkc72oZQsX",
+          "gasBurnt": "0.318 Tgas"
+        },
+        "bidWrongDeposit": {
+          "tx": "H2oDpB4RadbHhPLPkYVy7v6ToT5PTRHkQL6whEqRTGqp",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:alice.maskbid-keeper.testnet": {
+          "tx": "Wc6uMigTiNvXnXJ3QNypwacV7HRAgoZCrwyWy6DtCQ6",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "bid:bob.maskbid-keeper.testnet": {
+          "tx": "4ShcYDbxbTqcAVuvCtwW5auojNJBxNUt6rMgKNxxBocM",
+          "gasBurnt": "0.362 Tgas"
+        },
+        "requestSettlement": {
+          "tx": "8N2iRP9uHADHLrSyxDgJppw6sukGFeKcXRskdW8tkwdN",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "retrySettlement1": {
+          "tx": "Aaqkk3xHnLU1gzf96rhkjUQKzmAb7u47WWEm6fQ9H7Vj",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "retrySettlement2": {
+          "tx": "3zZrcF1yH8ETTdrz4hYYkCKuPnGquyEhdYFsPDwCEeMS",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "retrySettlement3": {
+          "tx": "GQrpioMReZiwMHkhAYJhoa2qui1iBh6f9DzkccyHirk",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "retrySettlement4": {
+          "tx": "J9aimbiZP2MdAugmGGUnFdUBwGagRPtVBANSY5u3XXEH",
+          "gasBurnt": "0.310 Tgas"
+        },
+        "claim": {
+          "tx": "4Xmd6xMiAHgVaFGLpg3bC5aWteYYCdJEH6RP3BhK9bN4",
+          "gasBurnt": "0.314 Tgas"
+        },
+        "claimRefund": {
+          "tx": "CQVKE9VEwAVzTzXrcY6ECp7DE6DfiEXb8r7YQBr6uX3M",
+          "gasBurnt": "0.310 Tgas"
+        }
+      },
+      "chainId": 398,
+      "contractAddress": "0xaba28f2af760061ff0253762ba6824a47fa62c01",
+      "solverCodeHash": "0x785b05898729ec13fe1788c6ca85d07ae084757d15b30ffe51ccaf78cf8f79d4",
+      "wasmUrl": "https://maskbid-keeper.testnet.fastfs.io/outlayer.testnet/785b05898729ec13fe1788c6ca85d07ae084757d15b30ffe51ccaf78cf8f79d4.wasm",
+      "configHash": "0x5ecef32a311e5ec83d4e3b348b3392946f4ba848466175a4e9c3261d8f644323",
+      "outlayer": "outlayer.testnet",
+      "tokenId": "1",
+      "keyRequestId": "0x35d67363ef94faf8e5fdfaa28ca5dad218e590e1e2446a51dd2fafa9fbc875ea",
+      "keyId": "0x03575ac0e125b9d056af79340ad67e2a0936c52269ef78a4d355f0f12ee995f8",
+      "sealedBlobHash": "0x3e2bd8b3a2816727e26b65d723be5842df2aca67eb43e738218ce231fc39a041",
+      "auctionId": 1,
+      "requestId": "0x3b53b6a38168aa5c285aca9fa76ef41b8d81190f9be54fb700501c81bb65247d",
+      "attempts": 5,
+      "bidDigest": "0xa0777a36969e75bbefac450e22124ebe6ef5b550ab8d8ce322f64d81e493b037",
+      "outputSha256": "0x30668271543988795fc8b3ec56716256ba99a2fc54cd73a61ef33cbbeaaad9e9",
+      "winner": "bob.maskbid-keeper.testnet",
+      "winningAmountUnits": "150000000",
+      "finishedAt": "2026-11-14T20:52:11.889Z"
+    }
+  ]
+}

@@ -87,7 +87,7 @@ export function FlowStory() {
     return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); cancelAnimationFrame(raf); };
   }, []);
   return (
-    <section ref={ref} className="story" aria-labelledby="flow-title" style={{ "--steps": FLOW.length } as CSSProperties}>
+    <section ref={ref} id="how" className="story" aria-labelledby="flow-title" style={{ "--steps": FLOW.length } as CSSProperties}>
       <div className="story-pin">
         <div className="container story-in">
           <div className="story-head">

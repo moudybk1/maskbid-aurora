@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { bytesToHex, zeroAddress, type Hex } from "viem";
 import { ENVELOPE_BYTES, encryptBid, keyIdFromSpki, parseUnits6, TOKEN_SYMBOL } from "@maskbid/protocol";
-import { CHAIN_ID, deployment } from "@/lib/config";
+import { CHAIN_ID } from "@/lib/config";
 import { short } from "@/lib/format";
 import { Dots } from "./Dots";
 
@@ -23,7 +23,7 @@ export function SealDemo() {
           .generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" }, true, ["encrypt", "decrypt"])
           .then(async (k) => { const spki = new Uint8Array(await crypto.subtle.exportKey("spki", k.publicKey)); return { spki, keyId: keyIdFromSpki(spki) }; });
         const { spki, keyId } = await key.current;
-        const domain = { chainId: BigInt(CHAIN_ID), auctionContract: deployment?.auction ?? zeroAddress, auctionId: 1n };
+        const domain = { chainId: BigInt(CHAIN_ID), auctionContract: zeroAddress, auctionId: 1n };
         const r = await encryptBid({ spki, domain, bidder: zeroAddress, amountUnits: parseUnits6(amount), expectedKeyId: keyId });
         if (alive) { setOut({ hex: bytesToHex(r.envelope), commitment: r.commitment }); setError(undefined); }
       } catch (e) {

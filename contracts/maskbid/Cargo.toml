@@ -1,0 +1,23 @@
+[package]
+name = "maskbid"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "MaskBid on NEAR: participant registry, asset ledger, sealed-bid auctions and OutLayer settlement in one contract"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk = "5.30"
+hex = "0.4"
+base64 = "0.22"
+
+[dev-dependencies]
+near-sdk = { version = "5.30", features = ["unit-testing"] }
+# The unchanged TEE solver: the tests feed it the manifest this contract builds and real sealed bids.
+maskbid-private-solver = { path = "../../apps/private-solver" }
+rsa = { version = "0.9", features = ["sha2"] }
+aes-gcm = "0.10"
+sha2 = "0.10"
+rand_core = { version = "0.6", features = ["getrandom"] }

@@ -1,21 +1,18 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useChainData } from "@/lib/data";
-import { contracts, publicClient } from "@/lib/client";
+import { readConfig } from "@/lib/client";
 import { useWallet } from "@/lib/wallet";
-import { keccak256, stringToBytes } from "viem";
 
-const LINKS = [["/", "Auctions"], ["/sell", "Sell"], ["/activity", "My activity"]] as const;
+const LINKS = [["/auctions", "Auctions"], ["/sell", "Sell"], ["/activity", "My activity"]] as const;
 // Seller flow pages live under /assets and /auctions/new but belong to "Sell".
-const section = (p: string) => (p === "/sell" || p.startsWith("/assets") || p === "/auctions/new" ? "/sell" : p.startsWith("/activity") ? "/activity" : p === "/" || p.startsWith("/auctions") ? "/" : p);
+const section = (p: string) => (p === "/sell" || p.startsWith("/assets") || p === "/auctions/new" ? "/sell" : p.startsWith("/activity") ? "/activity" : p.startsWith("/auctions") ? "/auctions" : p);
 
 export function Nav() {
   const path = usePathname();
   const { address } = useWallet();
   const { data: isVerifier } = useChainData(async () => {
-    if (!address) return false;
-    const { asset } = contracts();
-    return publicClient.readContract({ ...asset, functionName: "hasRole", args: [keccak256(stringToBytes("VERIFIER_ROLE")), address] });
+    return address !== undefined && (await readConfig()).verifier === address;
   }, [address], 30000);
   return (
     <nav className="nav" aria-label="Primary">

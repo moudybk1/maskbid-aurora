@@ -31,8 +31,8 @@ export function Hero() {
         <div className="hero-foot">
           <p className="hero-sub">Your amount is encrypted in your browser and locked with a deposit. Only the winning bid is ever revealed.</p>
           <div className="row hero-ctas">
-            <a className="btn" href="#lots">Explore auctions <Arrow /></a>
-            <a className="btn btn-secondary" href="#start">Get started</a>
+            <a className="btn" href="/auctions">Launch app <Arrow /></a>
+            <a className="btn btn-secondary" href="#how">How it works</a>
           </div>
         </div>
       </div>

@@ -29,12 +29,12 @@ export function PhaseTrack({ phase }: { phase: DisplayPhase }) {
 }
 
 /** Stands in for any screen that needs a wallet: one button, not a dead-end notice. */
-export function ConnectPrompt({ title = "Connect a wallet", children }: { title?: string; children: ReactNode }) {
+export function ConnectPrompt({ title = "Connect an account", children }: { title?: string; children: ReactNode }) {
   const { setConnectOpen } = useWallet();
   return (
     <div className="connect-prompt panel">
       <div><h3>{title}</h3><p className="muted">{children}</p></div>
-      <button type="button" className="btn" onClick={() => setConnectOpen(true)}>Connect wallet</button>
+      <button type="button" className="btn" onClick={() => setConnectOpen(true)}>Connect account</button>
     </div>
   );
 }
@@ -58,7 +58,7 @@ export function Money({ units, strong }: { units: bigint; strong?: boolean }) {
 
 export function AddressLink({ address, label }: { address: string; label?: string }) {
   const url = addressUrl(address);
-  const text = label ?? short(address);
+  const text = label ?? (address.length <= 34 ? address : short(address, 16, 10)); // NEAR account names read better whole
   return (
     <span className="mono" title={address}>
       {url ? <a href={url} target="_blank" rel="noreferrer">{text}</a> : text}
@@ -150,8 +150,8 @@ export function TxStatus({ state }: { state: TxState }) {
   if (state.status === "error") return <Alert tone="error" title={`${state.label ?? "Transaction"} failed`}>{state.error}</Alert>;
   if (state.status === "success") return <Alert tone="success" title={`${state.label ?? "Transaction"} confirmed`}>Receipt: {state.hash && <TxLink hash={state.hash} />}</Alert>;
   return (
-    <Alert tone="info" title={state.status === "signing" ? `Awaiting wallet signature: ${state.label}` : `Confirming: ${state.label}`}>
-      {state.hash ? <>Broadcast: <TxLink hash={state.hash} /> — closing this page does not cancel the transaction.</> : "Review the request in your wallet."}
+    <Alert tone="info" title={state.status === "signing" ? `Signing: ${state.label}` : `Confirming: ${state.label}`}>
+      {state.hash ? <>Broadcast: <TxLink hash={state.hash} /> — closing this page does not cancel the transaction.</> : "Signing with this account's key in the browser."}
     </Alert>
   );
 }

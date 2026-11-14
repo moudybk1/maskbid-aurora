@@ -1,9 +1,12 @@
 node_modules/
 .next/
+.next-*/
 contracts/out/
 contracts/cache/
 contracts/broadcast/
 contracts/lib/
+contracts/target/
+contracts/dist/
 apps/solver/keystore/
 apps/solver/evidence/
 apps/web/data/
@@ -16,6 +19,7 @@ apps/*/target/
 apps/*/dist/
 .taste-skill/
 .env.web-testnet
+.env.web-near
 .backup/
 .DS_Store
 *.tsbuildinfo
