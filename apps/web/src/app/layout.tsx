@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora, Spectral } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/lib/wallet";
+import { ModeGate } from "@/components/ModeGate";
 import { Nav } from "@/components/Nav";
 import { WalletControl } from "@/components/WalletControl";
 import { BrandMark } from "@/components/Dots";
@@ -31,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="container header-in">
               <a className="brand" href="/"><BrandMark />MaskBid</a>
               <Nav />
-              <div className="header-right"><WalletControl /></div>
+              <div className="header-right"><ModeGate /><WalletControl /></div>
             </div>
           </header>
           <main className="container">{children}</main>

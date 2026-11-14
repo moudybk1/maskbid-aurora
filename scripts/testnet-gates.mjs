@@ -371,8 +371,49 @@ async function xccProbe() {
   console.log("  aurora key status", onchain.status, "(1 Requested, 2 Ready)");
 }
 
+/** Demo catalog: three live lots that stay open for the profile's maximum (24 h on `demo`), two of them with sealed bids
+ *  from B and C. Bidder A stays free to bid on every lot. Rerun whenever the catalog has run dry (`npm run demo:seed`).
+ *  Metadata is a data: URI so the lots render wherever the web app is hosted; registerAsset caps the URI at 512 bytes. */
+async function seed() {
+  await setup();
+  const lots = [
+    { title: "Vintage Diver Watch, 1968", description: "Steel automatic diver with its original bracelet. Serviced this year.", category: "watch", condition: "Excellent", reserve: "100", deposit: "10", bids: [[B, "120"], [C, "135"]] },
+    { title: "Evening Sky, oil on linen", description: "Original 60 x 80 cm painting, signed on the reverse.", category: "art", condition: "New", reserve: "250", deposit: "25", bids: [[B, "300"]] },
+    { title: "Genesis Pass #042", description: "Founding member pass, one of 100.", category: "digital_collectible", condition: "Mint", reserve: "50", deposit: "5", bids: [] },
+  ];
+  step(`seed: ${lots.length} keys through the TEE`);
+  const requests = [];
+  for (const lot of lots) {
+    const r = await tx(S, auction, "prepareAuctionKey", [keccak256(stringToBytes(`seed-${lot.title}-${Date.now()}`))]);
+    requests.push(r.logs.map((l) => { try { return decodeEventLog({ abi: auctionAbi, ...l }); } catch { return null; } }).find((e) => e?.eventName === "KeyRequested").args.keyRequestId);
+  }
+  const keys = await Promise.all(requests.map((id) => until(`KeyPrepared ${id}`, async () => { const k = await pub.readContract({ ...auction, functionName: "getKeyRecord", args: [id] }); return k.status === 2 ? k : null; }, 1_200_000)));
+
+  step("seed: assets, auctions, bids");
+  await tx(S, asset, "setApprovalForAll", [d.auction, true]);
+  const { maxDurationSeconds } = await pub.readContract({ ...auction, functionName: "getConfig" });
+  for (const [i, lot] of lots.entries()) {
+    const metadata = JSON.stringify({ schemaVersion: 1, title: lot.title, description: lot.description, category: lot.category, condition: lot.condition, isDemo: true, issuerWallet: S.account.address.toLowerCase(), images: [] });
+    const metadataHash = `0x${Buffer.from(await crypto.subtle.digest("SHA-256", stringToBytes(metadata))).toString("hex")}`;
+    let r = await tx(S, asset, "registerAsset", [`data:application/json;base64,${Buffer.from(metadata).toString("base64")}`, metadataHash]);
+    const tokenId = decodeEventLog({ abi: assetAbi, ...r.logs[0] }).args.tokenId;
+    await tx(D, asset, "verifyAndMint", [tokenId, reviewDigest({ chainId: BigInt(chainId), assetContract: d.asset, tokenId, reviewer: D.account.address, metadataHash, decision: 1, reason: "metadata complete" })]);
+    const endTime = (await pub.getBlock()).timestamp + maxDurationSeconds - 300n; // margin for the blocks until this lands
+    r = await tx(S, auction, "createAuction", [tokenId, parseUnits6(lot.reserve), parseUnits6(lot.deposit), 0n, endTime, keys[i].keyId]);
+    const auctionId = decodeEventLog({ abi: auctionAbi, ...r.logs.find((l) => l.address.toLowerCase() === d.auction.toLowerCase()) }).args.auctionId;
+    for (const [w, amount] of lot.bids) {
+      const { envelope } = await encryptBid({ spki: hexToBytes(keys[i].publicKeySpki), domain: { chainId: BigInt(chainId), auctionContract: d.auction.toLowerCase(), auctionId }, bidder: w.account.address.toLowerCase(), amountUnits: parseUnits6(amount), expectedKeyId: keys[i].keyId });
+      await tx(w, token, "approve", [d.auction, parseUnits6(lot.deposit)]);
+      await tx(w, auction, "placeBid", [auctionId, bytesToHex(envelope)]);
+    }
+    console.log(`  lot ${auctionId}: ${lot.title}, ${lot.bids.length} bid(s), closes ${new Date(Number(endTime) * 1000).toISOString()}`);
+  }
+  console.log("\nDEMO CATALOG SEEDED");
+}
+
 const phase = process.argv[2] ?? "all";
 if (phase === "setup") await setup();
+if (phase === "seed") await seed();
 if (phase === "xcc-probe") await xccProbe();
 if (phase === "golden" || phase === "all") await golden();
 if (phase === "negatives" || phase === "all") await negatives();

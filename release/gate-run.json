@@ -52,7 +52,7 @@
       "xccPredecessor": "9802a6510d47941b139720d54bdbd61954ed5c5a.aurora"
     }
   },
-  "updatedAt": "2026-11-08T11:42:46.785Z",
+  "updatedAt": "2026-11-12T15:36:36.323Z",
   "setup": {
     "register": {
       "0x1dfb61D5b1975A2f536658d367363d9B346b578b": "0x3650f31602affcdcd201a4aea233b03a5139c8127465ecbf33f18b8d98bc3453",
@@ -369,6 +369,50 @@
     "status": "passed (late delivery rejected as WrongState)"
   },
   "recovery": {
+    "auctions": [
+      {
+        "tag": "nosale",
+        "auctionId": "11",
+        "tokenId": "13",
+        "createTx": "0xfc2a8da68ac9f5aae7cf039fdd131a58cc2e9af225d2aeda800ca537de56ed76"
+      },
+      {
+        "tag": "default",
+        "auctionId": "12",
+        "tokenId": "14",
+        "createTx": "0x52e8f27a38fd549db260d4f812e6301ab2df5a1cc2d85b97485869bf57b52c69"
+      },
+      {
+        "tag": "timeout",
+        "auctionId": "13",
+        "tokenId": "15",
+        "createTx": "0x533b08dda54d2195220108acc546caaae0513be333ce6bf136bb96049c699e1c"
+      }
+    ],
+    "nosale": {
+      "acceptedTx": "0x38866da13dfb6c308d9a0a2e2eb673deca6e5ffbd1a72236cd84fa0ce725da62",
+      "outcome": "NoSale",
+      "cancelReason": "NoValidBid"
+    },
+    "default": {
+      "acceptedTx": "0xa2594a54fa28d2cdf48664472bbc858294bd06c58b46bcf7a01c4682b13226c5",
+      "winnerDefaultedTx": "0x95e4b869d030564966f8c4b40f4620f221e4d5b929bde97a9883d2a4a42e4e0d",
+      "forfeitedUnits": "10000000"
+    },
+    "timeout": {
+      "attempts": 3,
+      "cancelTx": "0x1b509d53f721759a8a6fca22fd4ba7593a82f52ea86d9997729bb823eb9c7d48",
+      "cancelReason": "SolverTimeout",
+      "acceptedEvents": 0
+    },
+    "accounting": {
+      "sellerCreditBefore": "0",
+      "escrowBefore": "65000000",
+      "escrowAfter": "65000000"
+    },
+    "runDate": "2026-11-12"
+  },
+  "recovery_2026_11_08": {
     "auctions": [
       {
         "tag": "nosale",

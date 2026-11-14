@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { paintCloud, paintFlight, paintScene, rng } from "@/lib/stipple";
+import { paintArt, paintCloud, paintFlight, paintPass, paintScene, paintWatch, rng } from "@/lib/stipple";
 
-const PAINT = { cloud: paintCloud, flight: paintFlight, scene: paintScene };
+const PAINT = { cloud: paintCloud, flight: paintFlight, scene: paintScene, watch: paintWatch, art: paintArt, pass: paintPass };
 
 /** A canvas painted once with stippled dots when it comes near the viewport, and again if its size changes a lot. Size it with CSS. */
 export function Stipple({ kind, seed = 1, className }: { kind: keyof typeof PAINT; seed?: number; className?: string }) {

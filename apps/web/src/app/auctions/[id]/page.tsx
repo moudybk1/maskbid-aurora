@@ -36,8 +36,8 @@ export default function AuctionDetail() {
           <figure className="lot-media" style={{ margin: 0 }}>
             {metadata?.images?.[0] ? <img src={metadata.images[0]} alt={title} /> : (
               <>
-                <AssetArt seed={asset.metadataHash} large />
-                <figcaption>No pictures registered · art drawn from metadata hash {short(asset.metadataHash)}</figcaption>
+                <AssetArt seed={asset.metadataHash} category={metadata?.category} large />
+                <figcaption>No pictures registered · drawn from its category and hash {short(asset.metadataHash)}</figcaption>
               </>
             )}
           </figure>

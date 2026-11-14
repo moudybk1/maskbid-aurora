@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { keccak256, sha256, stringToBytes, type Hex } from "viem";
 import { reviewDigest } from "@maskbid/protocol";
-import { AddressLink, Alert, Badge, Empty, HashRow, SyncLine, TxStatus } from "@/components/ui";
+import { AddressLink, Alert, Badge, Empty, HashRow, SyncLine, TxStatus, UriLink } from "@/components/ui";
 import { assetEvents, contracts, fetchMetadata, publicClient, readAsset } from "@/lib/client";
 import { CHAIN_ID } from "@/lib/config";
 import { useChainData } from "@/lib/data";
@@ -59,7 +59,7 @@ export default function VerifierQueue() {
               <div className="stack" style={{ marginTop: 12 }}>
                 <HashRow label="Issuer" source="contract"><AddressLink address={a.issuer} /></HashRow>
                 <HashRow label="Metadata hash" value={a.metadataHash} source="contract" />
-                <HashRow label="Frozen metadata" source="URI fetch"><a href={a.metadataURI} target="_blank" rel="noreferrer" className="mono">{a.metadataURI}</a></HashRow>
+                <HashRow label="Frozen metadata" source="URI fetch"><UriLink uri={a.metadataURI} /></HashRow>
                 {meta.data && <dl className="kv"><dt>Category</dt><dd>{meta.data.category}</dd><dt>Condition</dt><dd>{meta.data.condition}</dd><dt>Description</dt><dd>{meta.data.description}</dd><dt>Images</dt><dd>{meta.data.images?.length ? meta.data.images.map((u) => <a key={u} href={u} target="_blank" rel="noreferrer" style={{ display: "block" }}>{u}</a>) : "none"}</dd></dl>}
                 {meta.integrity === "mismatch" && <Alert tone="error" title="Integrity error">The fetched metadata does not hash to the on-chain value. Do not approve.</Alert>}
                 {self && <Alert tone="warning" title="Self-review blocked">You registered this asset; the contract rejects issuer = reviewer.</Alert>}

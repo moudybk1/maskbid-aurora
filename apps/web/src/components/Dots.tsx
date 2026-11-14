@@ -30,10 +30,13 @@ export function expandHash(seed: Hex, n: number): Hex {
   return `0x${out.slice(0, n * 2)}`;
 }
 
-/** Stand-in picture for an asset without images: stippled clouds and a sealed envelope, arranged by the asset's own hash. */
-export function AssetArt({ seed }: { seed: string; large?: boolean }) {
+// The object painted for each asset category; anything else keeps the sealed envelope.
+const OBJECT: Record<string, "watch" | "art" | "pass"> = { watch: "watch", art: "art", digital_collectible: "pass" };
+
+/** Picture for an asset without images: stippled clouds and the category's object, arranged by the asset's own hash. */
+export function AssetArt({ seed, category }: { seed: string; category?: string; large?: boolean }) {
   const n = parseInt(seed.replace(/^0x/, "").slice(0, 8).padEnd(8, "0"), 16) || 1;
-  return <div className="art" aria-hidden="true"><Stipple kind="scene" seed={n} /></div>;
+  return <div className="art" aria-hidden="true"><Stipple kind={OBJECT[category ?? ""] ?? "scene"} seed={n} /></div>;
 }
 
 export function BrandMark() {

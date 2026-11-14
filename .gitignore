@@ -4,7 +4,6 @@ contracts/out/
 contracts/cache/
 contracts/broadcast/
 contracts/lib/
-packages/contracts/src/generated.ts
 apps/solver/keystore/
 apps/solver/evidence/
 apps/web/data/
@@ -19,3 +18,4 @@ apps/*/dist/
 .env.web-testnet
 .backup/
 .DS_Store
+*.tsbuildinfo

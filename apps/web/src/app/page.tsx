@@ -16,6 +16,7 @@ import { loadAuctions, useChainData } from "@/lib/data";
 
 const PHASES: ("All" | DisplayPhase)[] = ["All", "Live", "Scheduled", "Closed", "Resolving", "Claim", "Completed", "Cancelled"];
 const label = (p: (typeof PHASES)[number]) => (p === "Claim" ? "Pending payment" : p);
+const rank = (v: { phase: DisplayPhase }) => (v.phase === "Live" ? 0 : v.phase === "Scheduled" ? 1 : 2);
 
 const icon = (d: string) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 
@@ -37,11 +38,12 @@ export default function Home() {
   const { data, error, syncedAt, refresh, loading } = useChainData(loadAuctions, [], 8000);
   const { data: cfg } = useChainData(readConfig, [], 60000);
   const maxBids = Number(cfg?.maxBids ?? 32);
-  const all = data ?? [];
+  const all = data?.list ?? [];
   const count = (p: (typeof PHASES)[number]) => (p === "All" ? all.length : all.filter((v) => v.phase === p).length);
   const list = all
     .filter((v) => phase === "All" || v.phase === phase)
-    .sort((x, y) => (sort === "closing" ? Number(x.a.endTime - y.a.endTime) : Number(y.id - x.id)));
+    // "Closing soon" means open lots first (soonest close), then everything already closed, most recent first.
+    .sort((x, y) => (sort === "closing" ? rank(x) - rank(y) || (rank(x) < 2 ? Number(x.a.endTime - y.a.endTime) : Number(y.a.endTime - x.a.endTime)) : Number(y.id - x.id)));
   const settled = all.filter((v) => v.phase === "Completed").reduce((s, v) => s + v.a.winningAmountUnits, 0n);
   const stat = (n: number | string) => (data ? n : "—");
   const step = () => (track.current?.querySelector<HTMLElement>(".lot-card")?.offsetWidth ?? 0) + 24;
@@ -103,7 +105,7 @@ export default function Home() {
             </>}
           </div>
         )}
-        <div className="container lots-sync"><SyncLine syncedAt={syncedAt} error={error} onRefresh={refresh} /></div>
+        <div className="container lots-sync"><SyncLine syncedAt={syncedAt} error={error} onRefresh={refresh} via={data?.source === "indexer" ? "the indexer" : "chain"} /></div>
       </section>
 
       {deployment && <section id="start" className="container start-sec" aria-label="Get started"><GetStarted /></section>}

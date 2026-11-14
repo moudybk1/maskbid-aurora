@@ -39,7 +39,7 @@ export function AuctionCard({ v, maxBids }: { v: AuctionView; maxBids: number })
         <span className="lot-go">View lot <Arrow /></span>
       </div>
       <div className={`lot-art${img ? " photo" : ""}`}>
-        {img ? <img src={img} alt="" loading="lazy" /> : <AssetArt seed={v.asset.metadataHash} />}
+        {img ? <img src={img} alt="" loading="lazy" /> : <AssetArt seed={v.asset.metadataHash} category={v.metadata?.category} />}
       </div>
     </a>
   );

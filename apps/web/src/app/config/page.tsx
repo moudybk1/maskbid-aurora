@@ -8,6 +8,7 @@ import { fmtDuration } from "@/lib/format";
 
 export default function ConfigPage() {
   const { data: cfg, error } = useChainData(readConfig, [], 60000);
+  const { data: idx } = useChainData(() => fetch("/api/index/status", { cache: "no-store" }).then((r) => r.json() as Promise<{ configured: boolean; state?: string; block?: string; ageSeconds?: number; auctions?: number }>), [], 10000);
   if (!deployment) return <Alert tone="error" title="No deployment">No deployments file for chain {CHAIN_ID}.</Alert>;
   const local = deployment.nearAdapterAccount === "local-mock-adapter";
   return (
@@ -27,6 +28,10 @@ export default function ConfigPage() {
         <HashRow label="Solver code hash" value={deployment.solverCodeHash} source="deployments" />
         <HashRow label="Config hash" value={cfg?.configHash ?? deployment.configHash} source="contract" />
         <HashRow label="Deployment block" source="deployments"><span className="num">{deployment.deployBlock}</span></HashRow>
+        <HashRow label="Read model (indexer)" source="PostgreSQL"><span className="small">{!idx ? "Checking…" : !idx.configured ? "Not configured. Pages read the chain directly."
+          : !idx.block ? `${idx.state}. Pages read the chain directly.`
+          : (idx.ageSeconds ?? 0) > 30 ? `Not moving: last advanced ${Math.round(idx.ageSeconds ?? 0)} s ago at block ${idx.block}. Pages read the chain directly.`
+          : `${idx.state} · block ${idx.block} · ${idx.auctions} lots · moved ${Math.round(idx.ageSeconds ?? 0)} s ago`}</span></HashRow>
         {cfg && <HashRow label="Limits" source="contract"><span className="small">max {Number(cfg.maxBids)} bids · duration {fmtDuration(cfg.minDurationSeconds)}–{fmtDuration(cfg.maxDurationSeconds)} · claim window {fmtDuration(cfg.claimWindowSeconds)} · settlement grace {fmtDuration(cfg.settlementGraceSeconds)} · attempt timeout {fmtDuration(cfg.attemptTimeoutSeconds)} · {Number(cfg.maxAttempts)} attempts · envelope {Number(cfg.envelopeBytes)} bytes · protocol v{Number(cfg.protocolVersion)}</span></HashRow>}
         {cfg && deployment.configHash !== cfg.configHash && <Alert tone="error" title="Config hash mismatch">The deployments file does not match the contract. Writes should be treated as unsafe until regenerated.</Alert>}
       </section>

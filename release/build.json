@@ -14,10 +14,12 @@
   },
   "adapterWasm": {
     "file": "apps/near-adapter/dist/maskbid-near-adapter.wasm",
-    "sha256": "d7875f83052558bdae5c5f94bb955bc3e9620d7559d8dc8876b7b4ab7829a8c7",
+    "sha256": "fed8cb6dda925eedabd97fecad785df93e93cfbe422eefa2b380e53d307faec3",
+    "deployedCodeHash": "J9pHnvjWu9CY7bSTTc38eaPZffuEgNnwW6jHARZGHXRk",
     "account": "maskbid-adapter.testnet",
+    "supersededSha256": "d7875f83052558bdae5c5f94bb955bc3e9620d7559d8dc8876b7b4ab7829a8c7",
     "deployTxNoInit": "Eo4AuUQ1JCr37EPZXMxpPnJ4GP3YHSDjmJG91asVRq8Y",
-    "note": "Code deployed to maskbid-adapter.testnet without init (NEAR VM accepts the module); `new` runs once the Aurora auction address and configHash exist."
+    "note": "sha256 is the wasm in dist/ (file time 2026-10-23T13:52Z) and equals the code hash of maskbid-adapter.testnet read with view_account on 2026-11-13 (deployedCodeHash, base58 of the same 32 bytes). The first build (supersededSha256) was deployed without init by deployTxNoInit and replaced the same day; the transaction of that redeploy was not recorded in this file."
   },
   "callbackSender": "0x780dFA1E400790fffAeC39CF89c4c8182843570C",
   "localChecks": {

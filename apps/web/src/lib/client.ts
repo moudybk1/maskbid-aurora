@@ -62,7 +62,17 @@ export function assetEvents<N extends ContractEventName<typeof assetAbi>>(eventN
 export interface AssetMetadata {
   title?: string; description?: string; category?: string; condition?: string; isDemo?: boolean; issuerWallet?: string; images?: string[];
 }
-export async function fetchMetadata(uri: string, expectedHash: Hex): Promise<{ data?: AssetMetadata; integrity: "verified" | "mismatch" | "unavailable" }> {
+type MetadataResult = { data?: AssetMetadata; integrity: "verified" | "mismatch" | "unavailable" };
+const metadataCache = new Map<string, Promise<MetadataResult>>();
+/** Frozen metadata cannot change for a given hash, so each lot is fetched once per page load instead of on every poll.
+    ponytail: failures are remembered too (a reload retries); add a retry with backoff if metadata hosts turn out flaky. */
+export function fetchMetadata(uri: string, expectedHash: Hex): Promise<MetadataResult> {
+  const key = `${expectedHash}|${uri}`;
+  let hit = metadataCache.get(key);
+  if (!hit) metadataCache.set(key, (hit = loadMetadata(uri, expectedHash)));
+  return hit;
+}
+async function loadMetadata(uri: string, expectedHash: Hex): Promise<MetadataResult> {
   try {
     const res = await fetch(uri, { cache: "force-cache" });
     if (!res.ok) return { integrity: "unavailable" };

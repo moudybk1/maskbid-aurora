@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-import { AddressLink, Alert, Badge, HashRow, SyncLine, TxLink, TxStatus } from "@/components/ui";
+import { AddressLink, Alert, Badge, HashRow, SyncLine, TxLink, TxStatus, UriLink } from "@/components/ui";
 import { assetEvents, auctionEvents, contracts, fetchMetadata, readAsset, readAssetBalance } from "@/lib/client";
 import { COPY } from "@/lib/copy";
 import { useChainData } from "@/lib/data";
@@ -40,7 +40,7 @@ export default function AssetPage() {
       <section className="panel">
         <h2>Provenance</h2>
         <HashRow label="Issuer" source="contract"><AddressLink address={a.issuer} /></HashRow>
-        <HashRow label="Metadata URI" source="contract"><a href={a.metadataURI} target="_blank" rel="noreferrer" className="mono">{a.metadataURI}</a></HashRow>
+        <HashRow label="Metadata URI" source="contract"><UriLink uri={a.metadataURI} /></HashRow>
         <HashRow label="Metadata hash" value={a.metadataHash} source="contract" />
         <HashRow label="Metadata integrity" source="this browser"><Badge tone={meta.integrity === "verified" ? "success" : meta.integrity === "mismatch" ? "danger" : "warning"}>{meta.integrity}</Badge></HashRow>
         {a.status !== 0 && <HashRow label="Review digest" value={a.reviewDigest} source="contract" />}

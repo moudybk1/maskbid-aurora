@@ -16,11 +16,20 @@
     "solver": "npm -w @maskbid/solver start",
     "web": "npm -w web run dev",
     "e2e": "node scripts/e2e.mjs",
-    "web:testnet": "sh -c 'set -a; . ./.env.web-testnet; set +a; npm -w web run dev'",
+    "web:live": "NEXT_PUBLIC_CHAIN_ID=1313161555 NEXT_PUBLIC_RPC_URL=https://testnet.aurora.dev npm -w web run dev -- -p 3001",
+    "web:testnet": "sh -c 'set -a; . ./.env.web-testnet; set +a; npm -w web run dev -- -p 3001'",
+    "indexer:setup": "sh apps/indexer/setup.sh",
+    "indexer": "npm -w @maskbid/indexer start",
+    "indexer:check": "EVIDENCE=$PWD/release/indexer.json npm -w @maskbid/indexer run check",
+    "indexer:bench": "EVIDENCE=$PWD/release/indexer.json npm -w @maskbid/indexer run bench",
+    "demo": "sh -c 'trap \"kill 0\" EXIT; npm run keeper:testnet & npm run indexer & npm run web:testnet'",
+    "demo:seed": "node scripts/testnet-gates.mjs seed",
     "keeper:testnet": "sh -c 'set -a; . ./.env.aurora-testnet; set +a; KEEPER_KEY=$DEPLOYER_KEY npm -w @maskbid/keeper start'"
   },
   "devDependencies": {
+    "@openzeppelin/contracts": "5.2.0",
     "@types/node": "^22.0.0",
+    "forge-std": "github:foundry-rs/forge-std#v1.15.0",
     "typescript": "^5.6.0"
   }
 }

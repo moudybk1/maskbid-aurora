@@ -72,6 +72,11 @@ export function TxLink({ hash }: { hash: string }) {
   return <span className="mono" title={hash}>{url ? <a href={url} target="_blank" rel="noreferrer">{short(hash, 8, 6)}</a> : short(hash, 8, 6)}<CopyButton value={hash} /></span>;
 }
 
+/** A data: URI is the metadata itself (the seeded demo lots use one); a link to it would only open a blank tab. */
+export function UriLink({ uri }: { uri: string }) {
+  return uri.startsWith("data:") ? <span>Stored inline in the token record (data URI)</span> : <a href={uri} target="_blank" rel="noreferrer" className="mono">{uri}</a>;
+}
+
 export function CopyButton({ value }: { value: string }) {
   const [done, setDone] = useState(false);
   return (
@@ -118,7 +123,7 @@ export function AmountInput({ id, value, onChange, error, help, label, disabled 
   );
 }
 
-export function Modal({ title, onClose, children, closable = true }: { title: string; onClose: () => void; children: ReactNode; closable?: boolean }) {
+export function Modal({ title, onClose, children, closable = true, wide }: { title: string; onClose: () => void; children: ReactNode; closable?: boolean; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
@@ -130,7 +135,7 @@ export function Modal({ title, onClose, children, closable = true }: { title: st
   // Portal: an ancestor with a transform (the header's entrance animation) would otherwise trap position: fixed.
   return createPortal(
     <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget && closable) onClose(); }}>
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" ref={ref}>
+      <div className={wide ? "modal modal-wide" : "modal"} role="dialog" aria-modal="true" aria-labelledby="modal-title" ref={ref}>
         <div className="row between"><h2 id="modal-title">{title}</h2>{closable && <button type="button" className="btn btn-text" onClick={onClose} aria-label="Close dialog">Close</button>}</div>
         {children}
       </div>
@@ -169,10 +174,10 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
   return <div className="empty card"><h3>{title}</h3>{children}</div>;
 }
 
-export function SyncLine({ syncedAt, error, onRefresh }: { syncedAt?: number; error?: string; onRefresh: () => void }) {
+export function SyncLine({ syncedAt, error, onRefresh, via = "chain" }: { syncedAt?: number; error?: string; onRefresh: () => void; via?: string }) {
   return (
     <div className="row small muted" aria-live="polite">
-      {error ? <span style={{ color: "var(--color-danger)" }}>Chain read failed: {error}</span> : syncedAt ? <span>Last synced {new Date(syncedAt).toLocaleTimeString()} from chain</span> : <span>Syncing…</span>}
+      {error ? <span style={{ color: "var(--color-danger)" }}>Chain read failed: {error}</span> : syncedAt ? <span>Last synced {new Date(syncedAt).toLocaleTimeString()} from {via}</span> : <span>Syncing…</span>}
       <button type="button" className="btn btn-text btn-sm" onClick={onRefresh}>Refresh</button>
     </div>
   );

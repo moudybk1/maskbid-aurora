@@ -1,0 +1,33 @@
+{
+  "check": {
+    "checkedAt": "2026-11-12T16:16:50.941Z",
+    "chainId": 1313161555,
+    "auction": "0x9802a6510d47941b139720d54bdbd61954ed5c5a",
+    "asset": "0x5a4fa1404e8d2d20d2fb8558908b9cc8b5dc7351",
+    "block": "277386291",
+    "events": 218,
+    "auctions": 13,
+    "bids": 23,
+    "assets": 15,
+    "balances": 29,
+    "keys": 14,
+    "seconds": 124
+  },
+  "bench": {
+    "measuredAt": "2026-11-12T16:20:13.328Z",
+    "web": "http://localhost:3001",
+    "catalog": {
+      "requests": 100,
+      "concurrency": 1,
+      "lots": 13,
+      "p50Ms": 5,
+      "p95Ms": 6,
+      "maxMs": 12
+    },
+    "lagSeconds": {
+      "samples": 10,
+      "p50": 4,
+      "max": 7
+    }
+  }
+}

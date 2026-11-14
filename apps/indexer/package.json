@@ -1,0 +1,19 @@
+{
+  "name": "@maskbid/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Replays Aurora logs into the PostgreSQL read model (indexer-owned tables of the reference schema). Never decides an outcome.",
+  "scripts": {
+    "start": "node src/index.ts",
+    "replay": "node src/index.ts --replay",
+    "check": "node src/check.ts",
+    "bench": "node src/bench.ts"
+  },
+  "dependencies": {
+    "@maskbid/contracts": "*",
+    "@maskbid/protocol": "*",
+    "pg": "^8.13.0",
+    "viem": "^2.57.0"
+  }
+}

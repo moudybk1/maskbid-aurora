@@ -97,7 +97,7 @@ export function ActionPanel({ view, bids, refresh }: { view: AuctionView; bids: 
       {(phase === "Live" || phase === "Scheduled") && !address && (
         <div className="stack">
           <button type="button" className="btn btn-block" onClick={() => setConnectOpen(true)}>Connect wallet to bid</button>
-          <p className="caption">New here? <a href="/#start">See the four steps</a> from wallet to sealed bid.</p>
+          <p className="caption">New here? <a href="/#start">See the steps</a> from wallet to sealed bid.</p>
         </div>
       )}
 
