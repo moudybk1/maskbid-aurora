@@ -3,6 +3,7 @@ import { Sora, Spectral } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/lib/wallet";
 import { NETWORK } from "@/lib/config";
+import { FooterWord } from "@/components/FooterWord";
 import { BrandMark } from "@/components/Dots";
 import { SkyDefs } from "@/components/Sky";
 import { Stipple } from "@/components/Stipple";
@@ -49,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <span className="footer-net"><i aria-hidden="true" />Demo on {NETWORK}</span>
               </div>
             </div>
-            <p className="footer-word" aria-hidden="true">MaskBid</p>
+            <FooterWord />
           </footer>
         </WalletProvider>
       </body>

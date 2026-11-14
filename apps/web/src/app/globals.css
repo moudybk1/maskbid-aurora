@@ -617,6 +617,9 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .footer-net i { width: 7px; height: 7px; border-radius: 50%; background: #e0794f; box-shadow: 0 0 0 3px rgba(224, 121, 79, .18); }
 /* the closing wordmark echoes the opening intro: same serif, set into the clouds */
 .footer-word { margin: 0; padding: clamp(28px, 4vw, 56px) 0 clamp(10px, 1.4vw, 22px); text-align: center; font: 500 clamp(72px, 15vw, 236px)/.78 var(--font-body, serif); letter-spacing: -0.045em; color: rgba(39, 52, 74, .82); user-select: none; }
+.footer-word span { display: inline-block; opacity: 0; transform: translateY(.45em); transition: transform .8s var(--ease) calc(var(--i) * 50ms), opacity .5s ease calc(var(--i) * 50ms); }
+.footer-word[data-on] span { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .footer-word span { transition: none; } }
 @media (max-width: 860px) {
   .footer-top { grid-template-columns: 1fr; gap: 32px; padding: 32px 24px 28px; }
   .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
